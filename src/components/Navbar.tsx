@@ -38,7 +38,7 @@ const Navbar = () => {
               className={`text-sm font-body tracking-widest uppercase transition-colors duration-300 ${
                 location.pathname === link.href
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-primary"
+                  : "text-secondary-foreground/70 hover:text-primary"
               }`}
             >
               {link.label}
