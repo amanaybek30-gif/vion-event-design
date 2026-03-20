@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface GalleryImage {
   id: string;
@@ -9,17 +10,18 @@ export interface GalleryImage {
   alt: string;
 }
 
-const defaultGallery: GalleryImage[] = [];
-
 const Gallery = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const [images, setImages] = useState<GalleryImage[]>(defaultGallery);
+  const [images, setImages] = useState<GalleryImage[]>([]);
   const [selected, setSelected] = useState<GalleryImage | null>(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("vion-gallery");
-    if (stored) setImages(JSON.parse(stored));
+    const fetchImages = async () => {
+      const { data } = await supabase.from("gallery_images").select("*").order("created_at");
+      if (data) setImages(data);
+    };
+    fetchImages();
   }, []);
 
   return (
@@ -69,7 +71,6 @@ const Gallery = () => {
         </div>
       </section>
 
-      {/* Lightbox */}
       {selected && (
         <div
           className="fixed inset-0 z-50 bg-secondary/90 flex items-center justify-center p-4"

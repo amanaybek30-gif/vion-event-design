@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import flowfestImg from "@/assets/flowfest.jpg";
 import leadImg from "@/assets/lead-business.jpg";
 import gradImg from "@/assets/graduation.jpg";
@@ -51,11 +52,13 @@ const Portfolio = () => {
   const [projects, setProjects] = useState<PortfolioItem[]>(defaultProjects);
 
   useEffect(() => {
-    const stored = localStorage.getItem("vion-portfolio");
-    if (stored) {
-      const adminItems: PortfolioItem[] = JSON.parse(stored);
-      setProjects([...defaultProjects, ...adminItems]);
-    }
+    const fetchPortfolio = async () => {
+      const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
+      if (data && data.length > 0) {
+        setProjects([...defaultProjects, ...data]);
+      }
+    };
+    fetchPortfolio();
   }, []);
 
   return (
