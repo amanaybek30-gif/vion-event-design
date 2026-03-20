@@ -69,7 +69,7 @@ const Navbar = () => {
               key={link.href}
               to={link.href}
               onClick={() => setOpen(false)}
-              className="block text-sm tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors"
+              className="block text-sm tracking-widest uppercase text-secondary-foreground/70 hover:text-primary transition-colors"
             >
               {link.label}
             </Link>
