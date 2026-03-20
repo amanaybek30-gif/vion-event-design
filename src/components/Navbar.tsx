@@ -1,17 +1,20 @@
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import vionLogo from "@/assets/vion-logo.jpg";
 
 const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Work", href: "#work" },
-  { label: "Process", href: "#process" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Portfolio", href: "/portfolio" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <motion.nav
@@ -20,28 +23,32 @@ const Navbar = () => {
       transition={{ duration: 0.7 }}
       className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border"
     >
-      <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        <a href="#" className="font-display text-2xl font-bold tracking-wider text-gold-gradient">
-          VION
-        </a>
+      <div className="container mx-auto flex items-center justify-between py-2 px-6">
+        <Link to="/">
+          <img src={vionLogo} alt="VION Events" className="h-12 w-auto" />
+        </Link>
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
-              className="text-sm font-body tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors duration-300"
+              to={link.href}
+              className={`text-sm font-body tracking-widest uppercase transition-colors duration-300 ${
+                location.pathname === link.href
+                  ? "text-primary"
+                  : "text-muted-foreground hover:text-primary"
+              }`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             className="bg-gold-gradient text-primary-foreground px-6 py-2 text-sm font-semibold tracking-wider uppercase rounded-sm hover:opacity-90 transition-opacity"
           >
             Plan Your Event
-          </a>
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -58,22 +65,22 @@ const Navbar = () => {
           className="md:hidden bg-background border-t border-border px-6 pb-6 space-y-4"
         >
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.href}
-              href={link.href}
+              to={link.href}
               onClick={() => setOpen(false)}
               className="block text-sm tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             onClick={() => setOpen(false)}
             className="block bg-gold-gradient text-primary-foreground px-6 py-2 text-sm font-semibold tracking-wider uppercase rounded-sm text-center"
           >
             Plan Your Event
-          </a>
+          </Link>
         </motion.div>
       )}
     </motion.nav>
