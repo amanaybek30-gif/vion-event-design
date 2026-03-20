@@ -9,6 +9,7 @@ const navLinks = [
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
   { label: "Portfolio", href: "/portfolio" },
+  { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -21,7 +22,7 @@ const Navbar = () => {
       initial={{ y: -40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border"
+      className="fixed top-0 left-0 right-0 z-50 bg-secondary/95 backdrop-blur-md border-b border-border/20"
     >
       <div className="container mx-auto flex items-center justify-between py-2 px-6">
         <Link to="/">
@@ -37,7 +38,7 @@ const Navbar = () => {
               className={`text-sm font-body tracking-widest uppercase transition-colors duration-300 ${
                 location.pathname === link.href
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-primary"
+                  : "text-secondary-foreground/70 hover:text-primary"
               }`}
             >
               {link.label}
@@ -52,7 +53,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile toggle */}
-        <button className="md:hidden text-foreground" onClick={() => setOpen(!open)}>
+        <button className="md:hidden text-secondary-foreground" onClick={() => setOpen(!open)}>
           {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
@@ -62,14 +63,14 @@ const Navbar = () => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden bg-background border-t border-border px-6 pb-6 space-y-4"
+          className="md:hidden bg-secondary border-t border-border/20 px-6 pb-6 space-y-4"
         >
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
               onClick={() => setOpen(false)}
-              className="block text-sm tracking-widest uppercase text-muted-foreground hover:text-primary transition-colors"
+              className="block text-sm tracking-widest uppercase text-secondary-foreground/70 hover:text-primary transition-colors"
             >
               {link.label}
             </Link>

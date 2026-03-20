@@ -29,11 +29,14 @@ const DocumentarySection = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="aspect-video rounded-sm overflow-hidden border border-border/30 mb-8"
         >
-          <div className="w-full h-full bg-muted flex items-center justify-center">
-            <p className="text-muted-foreground font-body text-lg">
-              Video coming soon — link will be added here
-            </p>
-          </div>
+          <iframe
+            src="https://drive.google.com/file/d/1DdOKF7NZrYu6IRP79TsmOIHc40xia-B1/preview"
+            className="w-full h-full"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            loading="lazy"
+            title="Flow Fest 2025 Documentary Trailer"
+          />
         </motion.div>
 
         <motion.div

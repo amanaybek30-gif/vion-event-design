@@ -1,13 +1,23 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import flowfestImg from "@/assets/flowfest.jpg";
 import leadImg from "@/assets/lead-business.jpg";
 import gradImg from "@/assets/graduation.jpg";
 
-const projects = [
+interface PortfolioItem {
+  id: string;
+  image: string;
+  title: string;
+  category: string;
+  description: string;
+  impact: string;
+}
+
+const defaultProjects: PortfolioItem[] = [
   {
+    id: "default-1",
     image: flowfestImg,
     title: "Flow Fest",
     category: "Festival",
@@ -16,6 +26,7 @@ const projects = [
     impact: "5,000+ attendees · 3 stages · 24 artists",
   },
   {
+    id: "default-2",
     image: leadImg,
     title: "LEAD Business Event",
     category: "Corporate",
@@ -24,6 +35,7 @@ const projects = [
     impact: "500+ executives · 12 speakers · Full-day program",
   },
   {
+    id: "default-3",
     image: gradImg,
     title: "Graduation Ceremonies",
     category: "Celebration",
@@ -36,6 +48,15 @@ const projects = [
 const Portfolio = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const [projects, setProjects] = useState<PortfolioItem[]>(defaultProjects);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("vion-portfolio");
+    if (stored) {
+      const adminItems: PortfolioItem[] = JSON.parse(stored);
+      setProjects([...defaultProjects, ...adminItems]);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -59,11 +80,11 @@ const Portfolio = () => {
           <div className="space-y-24">
             {projects.map((project, i) => (
               <motion.div
-                key={project.title}
+                key={project.id}
                 initial={{ opacity: 0, y: 60 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8, delay: i * 0.2 }}
-                className={`grid md:grid-cols-2 gap-12 items-center`}
+                className="grid md:grid-cols-2 gap-12 items-center"
               >
                 <div className={i % 2 === 1 ? "md:order-2" : ""}>
                   <div className="overflow-hidden rounded-sm">
