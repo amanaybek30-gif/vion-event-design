@@ -8,6 +8,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
+  { label: "VERS", href: "/vers" },
   { label: "Portfolio", href: "/portfolio" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
@@ -30,12 +31,12 @@ const Navbar = () => {
         </Link>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               to={link.href}
-              className={`text-sm font-body tracking-widest uppercase transition-colors duration-300 ${
+              className={`text-xs font-body tracking-widest uppercase transition-colors duration-300 ${
                 location.pathname === link.href
                   ? "text-primary"
                   : "text-secondary-foreground/70 hover:text-primary"
@@ -44,12 +45,6 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          <Link
-            to="/contact"
-            className="bg-gold-gradient text-primary-foreground px-6 py-2 text-sm font-semibold tracking-wider uppercase rounded-sm hover:opacity-90 transition-opacity"
-          >
-            Plan Your Event
-          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -70,18 +65,11 @@ const Navbar = () => {
               key={link.href}
               to={link.href}
               onClick={() => setOpen(false)}
-              className="block text-sm tracking-widest uppercase text-secondary-foreground/70 hover:text-primary transition-colors"
+              className="block text-xs tracking-widest uppercase text-secondary-foreground/70 hover:text-primary transition-colors"
             >
               {link.label}
             </Link>
           ))}
-          <Link
-            to="/contact"
-            onClick={() => setOpen(false)}
-            className="block bg-gold-gradient text-primary-foreground px-6 py-2 text-sm font-semibold tracking-wider uppercase rounded-sm text-center"
-          >
-            Plan Your Event
-          </Link>
         </motion.div>
       )}
     </motion.nav>
