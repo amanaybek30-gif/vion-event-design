@@ -10,6 +10,7 @@ import Contact from "./pages/Contact.tsx";
 import About from "./pages/About.tsx";
 import Gallery from "./pages/Gallery.tsx";
 import Admin from "./pages/Admin.tsx";
+import Vers from "./pages/Vers.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
