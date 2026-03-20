@@ -62,7 +62,7 @@ const Navbar = () => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden bg-background border-t border-border px-6 pb-6 space-y-4"
+          className="md:hidden bg-secondary border-t border-border/20 px-6 pb-6 space-y-4"
         >
           {navLinks.map((link) => (
             <Link
