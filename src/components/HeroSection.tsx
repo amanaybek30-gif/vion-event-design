@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import heroImg from "@/assets/hero-event.jpg";
 
 const HeroSection = () => {
@@ -11,8 +12,8 @@ const HeroSection = () => {
           alt="Premium event with dramatic gold lighting"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-background/60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
       </div>
 
       {/* Floating particles */}
@@ -46,7 +47,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6"
+          className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6 text-white"
         >
           Designed to Be{" "}
           <span className="text-gold-gradient">Remembered</span>
@@ -56,7 +57,8 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-lg md:text-xl text-muted-foreground font-body font-light max-w-2xl mx-auto mb-10"
+          className="text-lg md:text-xl font-body font-light max-w-2xl mx-auto mb-10"
+          style={{ color: "hsl(0, 0%, 80%)" }}
         >
           We create experiences, not just events.
         </motion.p>
@@ -67,18 +69,18 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
-          <a
-            href="#work"
+          <Link
+            to="/portfolio"
             className="bg-gold-gradient text-primary-foreground px-8 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:opacity-90 transition-opacity"
           >
             View Our Work
-          </a>
-          <a
-            href="#contact"
-            className="border border-primary/40 text-foreground px-8 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:bg-primary/10 transition-colors"
+          </Link>
+          <Link
+            to="/contact"
+            className="border border-primary/40 text-white px-8 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:bg-primary/10 transition-colors"
           >
             Plan Your Event
-          </a>
+          </Link>
         </motion.div>
       </div>
 
