@@ -1,9 +1,16 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { usePageContent } from "@/hooks/usePageContent";
+
+const defaults = {
+  line1: "We don't just organize events.",
+  line2: "We design moments people remember.",
+};
 
 const BrandStatement = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const { content: c } = usePageContent("brand_section", defaults);
 
   return (
     <section className="py-32 px-6 relative overflow-hidden" ref={ref}>
@@ -16,11 +23,9 @@ const BrandStatement = () => {
       >
         <div className="w-16 h-px bg-primary mx-auto mb-12" />
         <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-bold leading-tight">
-          We don't just organize events.
+          {c.line1}
           <br />
-          <span className="text-gold-gradient">
-            We design moments people remember.
-          </span>
+          <span className="text-gold-gradient">{c.line2}</span>
         </h2>
         <div className="w-16 h-px bg-primary mx-auto mt-12" />
       </motion.div>
@@ -29,3 +34,5 @@ const BrandStatement = () => {
 };
 
 export default BrandStatement;
+
+export { defaults as brandDefaults };

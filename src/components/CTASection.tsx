@@ -1,10 +1,20 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { usePageContent } from "@/hooks/usePageContent";
+
+const defaults = {
+  title_start: "Let's Build Something",
+  title_highlight: "Unforgettable",
+  description: "Ready to turn your vision into an experience? Let's talk.",
+  cta1: "Plan Your Event",
+  cta2: "Contact Us",
+};
 
 const CTASection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const { content: c } = usePageContent("cta_section", defaults);
 
   return (
     <section className="py-32 px-6 section-dark" ref={ref}>
@@ -14,26 +24,25 @@ const CTASection = () => {
         transition={{ duration: 0.8 }}
         className="container mx-auto max-w-3xl text-center"
       >
-        <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6" style={{ color: "hsl(0, 0%, 95%)" }}>
-          Let's Build Something{" "}
-          <span className="text-gold-gradient">Unforgettable</span>
+        <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+          {c.title_start}{" "}
+          <span className="text-gold-gradient">{c.title_highlight}</span>
         </h2>
         <p className="font-body text-lg mb-10 max-w-xl mx-auto text-white/80">
-          Ready to turn your vision into an experience? Let's talk.
+          {c.description}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/contact"
             className="bg-gold-gradient text-primary-foreground px-10 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:opacity-90 transition-opacity"
           >
-            Plan Your Event
+            {c.cta1}
           </Link>
           <Link
             to="/contact"
-            className="border border-primary/40 px-10 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:bg-primary/10 transition-colors"
-            style={{ color: "hsl(0, 0%, 95%)" }}
+            className="border border-primary/40 px-10 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:bg-primary/10 transition-colors text-white"
           >
-            Contact Us
+            {c.cta2}
           </Link>
         </div>
       </motion.div>
@@ -42,3 +51,5 @@ const CTASection = () => {
 };
 
 export default CTASection;
+
+export { defaults as ctaDefaults };
