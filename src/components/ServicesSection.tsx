@@ -1,28 +1,32 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Briefcase, Palette, Music } from "lucide-react";
+import { usePageContent } from "@/hooks/usePageContent";
 
-const categories = [
-  {
-    icon: Briefcase,
-    title: "Corporate & Professional",
-    items: ["Conferences", "Forums", "Business Events"],
-  },
-  {
-    icon: Palette,
-    title: "Brand & Creative",
-    items: ["Brand Activations", "Product Launches", "Experience Design"],
-  },
-  {
-    icon: Music,
-    title: "Social & Cultural",
-    items: ["Festivals", "Youth Events", "Private Gatherings"],
-  },
-];
+const icons = [Briefcase, Palette, Music];
+
+const defaults = {
+  subtitle: "What We Do",
+  title_start: "Crafting Every",
+  title_highlight: "Dimension",
+  cat1_title: "Corporate & Professional",
+  cat1_items: "Conferences, Forums, Business Events",
+  cat2_title: "Brand & Creative",
+  cat2_items: "Brand Activations, Product Launches, Experience Design",
+  cat3_title: "Social & Cultural",
+  cat3_items: "Festivals, Youth Events, Private Gatherings",
+};
 
 const ServicesSection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const { content: c } = usePageContent("services_section", defaults);
+
+  const categories = [
+    { icon: icons[0], title: c.cat1_title, items: c.cat1_items.split(",").map((s) => s.trim()) },
+    { icon: icons[1], title: c.cat2_title, items: c.cat2_items.split(",").map((s) => s.trim()) },
+    { icon: icons[2], title: c.cat3_title, items: c.cat3_items.split(",").map((s) => s.trim()) },
+  ];
 
   return (
     <section id="services" className="py-32 px-6" ref={ref}>
@@ -34,10 +38,10 @@ const ServicesSection = () => {
           className="text-center mb-20"
         >
           <p className="text-primary tracking-[0.3em] uppercase text-sm font-body mb-4">
-            What We Do
+            {c.subtitle}
           </p>
           <h2 className="font-display text-4xl md:text-5xl font-bold">
-            Crafting Every <span className="text-gold-gradient">Dimension</span>
+            {c.title_start} <span className="text-gold-gradient">{c.title_highlight}</span>
           </h2>
         </motion.div>
 
@@ -56,10 +60,7 @@ const ServicesSection = () => {
               </h3>
               <ul className="space-y-2">
                 {cat.items.map((item) => (
-                  <li
-                    key={item}
-                    className="text-muted-foreground font-body text-sm flex items-center gap-2"
-                  >
+                  <li key={item} className="text-white/60 font-body text-sm flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
                     {item}
                   </li>
@@ -74,3 +75,5 @@ const ServicesSection = () => {
 };
 
 export default ServicesSection;
+
+export { defaults as servicesDefaults };

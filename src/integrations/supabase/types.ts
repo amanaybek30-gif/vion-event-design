@@ -35,6 +35,33 @@ export type Database = {
         }
         Relationships: []
       }
+      page_contents: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          page: string
+          section_key: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          page: string
+          section_key: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          page?: string
+          section_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       portfolio_items: {
         Row: {
           category: string

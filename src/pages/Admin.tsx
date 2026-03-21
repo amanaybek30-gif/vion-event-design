@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Trash2, Plus, LogOut, Image as ImageIcon, Upload } from "lucide-react";
+import { Trash2, Plus, LogOut, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import PageContentEditor from "@/components/PageContentEditor";
 
 interface PortfolioItem {
   id: string;
@@ -23,9 +24,9 @@ interface GalleryImage {
 }
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const getPublicUrl = (path: string) => `${SUPABASE_URL}/storage/v1/object/public/images/${path}`;
 
-const getPublicUrl = (path: string) =>
-  `${SUPABASE_URL}/storage/v1/object/public/images/${path}`;
+type Tab = "portfolio" | "gallery" | "about" | "services" | "contact" | "vers";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Admin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [tab, setTab] = useState<"portfolio" | "gallery">("portfolio");
+  const [tab, setTab] = useState<Tab>("portfolio");
 
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [editItem, setEditItem] = useState<PortfolioItem | null>(null);
@@ -91,10 +92,7 @@ const Admin = () => {
     const ext = file.name.split(".").pop();
     const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await supabase.storage.from("images").upload(path, file);
-    if (error) {
-      console.error("Upload error:", error);
-      return null;
-    }
+    if (error) { console.error("Upload error:", error); return null; }
     return getPublicUrl(path);
   };
 
@@ -115,19 +113,13 @@ const Admin = () => {
     if (!editItem) return;
     if (editItem.id) {
       await supabase.from("portfolio_items").update({
-        image: editItem.image,
-        title: editItem.title,
-        category: editItem.category,
-        description: editItem.description,
-        impact: editItem.impact,
+        image: editItem.image, title: editItem.title, category: editItem.category,
+        description: editItem.description, impact: editItem.impact,
       }).eq("id", editItem.id);
     } else {
       await supabase.from("portfolio_items").insert({
-        image: editItem.image,
-        title: editItem.title,
-        category: editItem.category,
-        description: editItem.description,
-        impact: editItem.impact,
+        image: editItem.image, title: editItem.title, category: editItem.category,
+        description: editItem.description, impact: editItem.impact,
       });
     }
     setEditItem(null);
@@ -145,10 +137,7 @@ const Admin = () => {
     setGalleryUploading(true);
     const url = await uploadImage(file, "gallery");
     if (url) {
-      await supabase.from("gallery_images").insert({
-        src: url,
-        alt: newGalleryAlt.trim() || "Gallery image",
-      });
+      await supabase.from("gallery_images").insert({ src: url, alt: newGalleryAlt.trim() || "Gallery image" });
       setNewGalleryAlt("");
       fetchGallery();
     }
@@ -172,14 +161,8 @@ const Admin = () => {
   if (!authed) {
     return (
       <div className="min-h-screen bg-secondary flex items-center justify-center px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-sm"
-        >
-          <h1 className="font-display text-2xl font-bold text-secondary-foreground text-center mb-8">
-            Admin Access
-          </h1>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-sm">
+          <h1 className="font-display text-2xl font-bold text-secondary-foreground text-center mb-8">Admin Access</h1>
           <form onSubmit={handleLogin} className="space-y-4">
             <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}
               className="bg-secondary-foreground/10 border-border/30 text-secondary-foreground placeholder:text-secondary-foreground/40" />
@@ -193,6 +176,15 @@ const Admin = () => {
     );
   }
 
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "portfolio", label: "Portfolio" },
+    { key: "gallery", label: "Gallery" },
+    { key: "about", label: "About" },
+    { key: "services", label: "Services" },
+    { key: "contact", label: "Contact" },
+    { key: "vers", label: "VERS" },
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="container mx-auto max-w-5xl py-8 px-6">
@@ -203,15 +195,15 @@ const Admin = () => {
           </Button>
         </div>
 
-        <div className="flex gap-4 mb-8 border-b border-border">
-          <button onClick={() => setTab("portfolio")}
-            className={`pb-2 text-sm font-body tracking-wider uppercase transition-colors ${tab === "portfolio" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            Portfolio
-          </button>
-          <button onClick={() => setTab("gallery")}
-            className={`pb-2 text-sm font-body tracking-wider uppercase transition-colors ${tab === "gallery" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
-            Gallery
-          </button>
+        <div className="flex gap-4 mb-8 border-b border-border overflow-x-auto">
+          {tabs.map((t) => (
+            <button key={t.key} onClick={() => setTab(t.key)}
+              className={`pb-2 text-sm font-body tracking-wider uppercase transition-colors whitespace-nowrap ${
+                tab === t.key ? "text-primary border-b-2 border-primary" : "text-muted-foreground"
+              }`}>
+              {t.label}
+            </button>
+          ))}
         </div>
 
         {tab === "portfolio" && (
@@ -226,23 +218,17 @@ const Admin = () => {
             {editItem && (
               <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
                 <Input placeholder="Title" value={editItem.title} onChange={(e) => setEditItem({ ...editItem, title: e.target.value })} />
-                <Input placeholder="Category (e.g., Festival, Corporate)" value={editItem.category} onChange={(e) => setEditItem({ ...editItem, category: e.target.value })} />
-
-                {/* Image upload */}
+                <Input placeholder="Category" value={editItem.category} onChange={(e) => setEditItem({ ...editItem, category: e.target.value })} />
                 <div className="space-y-2">
                   <label className="text-sm text-muted-foreground font-body">Image</label>
-                  {editItem.image && (
-                    <img src={editItem.image} alt="Preview" className="w-32 h-20 object-cover rounded-sm border border-border" />
-                  )}
+                  {editItem.image && <img src={editItem.image} alt="Preview" className="w-32 h-20 object-cover rounded-sm border border-border" />}
                   <input type="file" accept="image/*" ref={portfolioFileRef} onChange={handlePortfolioImageUpload} className="hidden" />
-                  <Button type="button" variant="outline" size="sm" disabled={uploading}
-                    onClick={() => portfolioFileRef.current?.click()}>
+                  <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => portfolioFileRef.current?.click()}>
                     <Upload className="w-4 h-4 mr-2" /> {uploading ? "Uploading..." : "Upload Image"}
                   </Button>
                 </div>
-
                 <Textarea placeholder="Description" value={editItem.description} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })} />
-                <Input placeholder="Impact (e.g., 5,000+ attendees)" value={editItem.impact} onChange={(e) => setEditItem({ ...editItem, impact: e.target.value })} />
+                <Input placeholder="Impact" value={editItem.impact} onChange={(e) => setEditItem({ ...editItem, impact: e.target.value })} />
                 <div className="flex gap-2">
                   <Button onClick={saveEditItem} className="bg-gold-gradient text-primary-foreground">Save</Button>
                   <Button variant="outline" onClick={() => setEditItem(null)}>Cancel</Button>
@@ -264,9 +250,7 @@ const Admin = () => {
                   </Button>
                 </div>
               ))}
-              {portfolio.length === 0 && (
-                <p className="text-muted-foreground text-sm text-center py-8">No portfolio items yet. Click "Add Work" to get started.</p>
-              )}
+              {portfolio.length === 0 && <p className="text-muted-foreground text-sm text-center py-8">No portfolio items yet.</p>}
             </div>
           </div>
         )}
@@ -292,9 +276,135 @@ const Admin = () => {
                 </div>
               ))}
             </div>
-            {gallery.length === 0 && (
-              <p className="text-muted-foreground text-sm text-center py-8">No gallery images yet. Upload images above.</p>
-            )}
+            {gallery.length === 0 && <p className="text-muted-foreground text-sm text-center py-8">No gallery images yet.</p>}
+          </div>
+        )}
+
+        {tab === "about" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-6">About Page Content</h2>
+            <PageContentEditor
+              page="about"
+              defaults={{
+                subtitle: "Who We Are", title_start: "Not Just Events.", title_highlight: "Experiences.",
+                description: "We are a full-service event company turning ideas into powerful experiences — from corporate forums to cultural activations and premium social events.",
+                pillar1_title: "Creativity", pillar1_desc: "Bold ideas that push boundaries",
+                pillar2_title: "Precision", pillar2_desc: "Flawless execution, every detail",
+                pillar3_title: "Storytelling", pillar3_desc: "Narratives that resonate deeply",
+                extra: "More content coming soon. Stay tuned to learn more about our story, our team, and what drives us to create moments people remember.",
+              }}
+              fields={[
+                { key: "subtitle", label: "Subtitle", type: "text" },
+                { key: "title_start", label: "Title (start)", type: "text" },
+                { key: "title_highlight", label: "Title (highlight)", type: "text" },
+                { key: "description", label: "Description", type: "textarea" },
+                { key: "pillar1_title", label: "Pillar 1 Title", type: "text" },
+                { key: "pillar1_desc", label: "Pillar 1 Description", type: "text" },
+                { key: "pillar2_title", label: "Pillar 2 Title", type: "text" },
+                { key: "pillar2_desc", label: "Pillar 2 Description", type: "text" },
+                { key: "pillar3_title", label: "Pillar 3 Title", type: "text" },
+                { key: "pillar3_desc", label: "Pillar 3 Description", type: "text" },
+                { key: "extra", label: "Extra Content", type: "textarea" },
+              ]}
+            />
+          </div>
+        )}
+
+        {tab === "services" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-6">Services Page Content</h2>
+            <PageContentEditor
+              page="services"
+              defaults={{
+                subtitle: "What We Do", title_start: "Our", title_highlight: "Services",
+                description: "End-to-end event solutions crafted with creativity, precision, and passion.",
+                service1_title: "Event Planning & Execution", service1_desc: "From concept to execution, we plan every detail.",
+                service2_title: "Theme & Budget Designing", service2_desc: "Creative theme development and strategic budget planning.",
+                service3_title: "Venue Selection & Setup", service3_desc: "Expert venue sourcing and professional setup.",
+                service4_title: "Event Branding & Creative Design", service4_desc: "Professional branding solutions and creative design.",
+                service5_title: "Digital Experience", service5_desc: "Modern event technology and digital solutions.",
+                service6_title: "Entertainment", service6_desc: "Curated entertainment options.",
+                service7_title: "Catering Coordination", service7_desc: "Exceptional food and beverage services.",
+                service8_title: "Technical Production", service8_desc: "Sound, lighting, AV equipment, and stage setup.",
+                service9_title: "Logistics Management", service9_desc: "Transportation, accommodation, and coordination.",
+                service10_title: "Guest Experience", service10_desc: "Registration and personalized guest services.",
+              }}
+              fields={[
+                { key: "subtitle", label: "Subtitle", type: "text" },
+                { key: "title_start", label: "Title (start)", type: "text" },
+                { key: "title_highlight", label: "Title (highlight)", type: "text" },
+                { key: "description", label: "Description", type: "textarea" },
+                ...Array.from({ length: 10 }, (_, i) => [
+                  { key: `service${i + 1}_title`, label: `Service ${i + 1} Title`, type: "text" as const },
+                  { key: `service${i + 1}_desc`, label: `Service ${i + 1} Description`, type: "textarea" as const },
+                ]).flat(),
+              ]}
+            />
+          </div>
+        )}
+
+        {tab === "contact" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-6">Contact Page Content</h2>
+            <PageContentEditor
+              page="contact"
+              defaults={{
+                subtitle: "Get in Touch", title_start: "Let's", title_highlight: "Connect",
+                description: "Ready to create something unforgettable? Reach out and let's start planning.",
+                email_label: "Email Us", email: "info@vionevents.com",
+                phone_label: "Call Us", phone: "+251 944 010 908",
+                locations_label: "Locations", locations: "Addis Ababa · Hawassa",
+              }}
+              fields={[
+                { key: "subtitle", label: "Subtitle", type: "text" },
+                { key: "title_start", label: "Title (start)", type: "text" },
+                { key: "title_highlight", label: "Title (highlight)", type: "text" },
+                { key: "description", label: "Description", type: "textarea" },
+                { key: "email_label", label: "Email Section Label", type: "text" },
+                { key: "email", label: "Email Address", type: "text" },
+                { key: "phone_label", label: "Phone Section Label", type: "text" },
+                { key: "phone", label: "Phone Number", type: "text" },
+                { key: "locations_label", label: "Locations Label", type: "text" },
+                { key: "locations", label: "Locations", type: "text" },
+              ]}
+            />
+          </div>
+        )}
+
+        {tab === "vers" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-6">VERS Page Content</h2>
+            <PageContentEditor
+              page="vers"
+              defaults={{
+                hero_subtitle: "VION Event Registration System",
+                hero_title_start: "Run Smarter Events",
+                hero_title_highlight: "with VERS",
+                hero_description: "Manage registration, check-in, and event performance — all in one platform.",
+                features_title_start: "Everything You Need,",
+                features_title_highlight: "Built In",
+                features_description: "VERS combines registration, analytics, and attendee management into a single seamless experience.",
+                how_title_start: "How It",
+                how_title_highlight: "Works",
+                cta_title_start: "Ready to Elevate Your",
+                cta_title_highlight: "Events?",
+                cta_description: "Join organizers who trust VERS to power seamless, data-driven event experiences.",
+              }}
+              fields={[
+                { key: "hero_subtitle", label: "Hero Subtitle", type: "text" },
+                { key: "hero_title_start", label: "Hero Title (start)", type: "text" },
+                { key: "hero_title_highlight", label: "Hero Title (highlight)", type: "text" },
+                { key: "hero_description", label: "Hero Description", type: "textarea" },
+                { key: "features_title_start", label: "Features Title (start)", type: "text" },
+                { key: "features_title_highlight", label: "Features Title (highlight)", type: "text" },
+                { key: "features_description", label: "Features Description", type: "textarea" },
+                { key: "how_title_start", label: "How It Works Title (start)", type: "text" },
+                { key: "how_title_highlight", label: "How It Works Title (highlight)", type: "text" },
+                { key: "cta_title_start", label: "CTA Title (start)", type: "text" },
+                { key: "cta_title_highlight", label: "CTA Title (highlight)", type: "text" },
+                { key: "cta_description", label: "CTA Description", type: "textarea" },
+              ]}
+            />
           </div>
         )}
       </div>
