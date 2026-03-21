@@ -308,14 +308,6 @@ const Vers = () => {
               Browse Events
             </a>
           </motion.div>
-          <motion.p
-            variants={fadeUp}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="font-body text-[10px] tracking-widest uppercase mt-8"
-            style={{ color: "hsl(0,0%,40%)" }}
-          >
-            Powered by VERS
-          </motion.p>
         </div>
       </Section>
 
