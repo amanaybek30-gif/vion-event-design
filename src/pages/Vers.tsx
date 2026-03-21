@@ -69,8 +69,13 @@ const Vers = () => {
       <Navbar />
 
       {/* Hero */}
-      <Section className="pt-32 pb-24 px-6">
-        <div className="container mx-auto max-w-4xl text-center">
+      <Section className="relative pt-32 pb-24 px-6">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${versHeroBg})` }}
+        />
+        <div className="absolute inset-0 bg-secondary/80" />
+        <div className="container mx-auto max-w-4xl text-center relative z-10">
           <motion.p
             variants={fadeUp}
             transition={{ duration: 0.6 }}
