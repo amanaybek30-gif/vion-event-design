@@ -45,7 +45,7 @@ const DocumentarySection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-center"
         >
-          <p className="text-muted-foreground font-body leading-relaxed max-w-2xl mx-auto mb-8" style={{ color: "hsl(0, 0%, 70%)" }}>
+          <p className="text-white/80 font-body leading-relaxed max-w-2xl mx-auto mb-8">
             Official trailer revealing the struggle, the unheard stories, and dedication 
             of those working at Hawassa Regional Blood Bank.
           </p>
