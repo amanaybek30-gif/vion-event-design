@@ -18,7 +18,7 @@ const CTASection = () => {
           Let's Build Something{" "}
           <span className="text-gold-gradient">Unforgettable</span>
         </h2>
-        <p className="font-body text-lg mb-10 max-w-xl mx-auto" style={{ color: "hsl(0, 0%, 60%)" }}>
+        <p className="font-body text-lg mb-10 max-w-xl mx-auto text-white/80">
           Ready to turn your vision into an experience? Let's talk.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

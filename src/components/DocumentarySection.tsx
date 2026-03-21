@@ -45,18 +45,18 @@ const DocumentarySection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-center"
         >
-          <p className="text-muted-foreground font-body leading-relaxed max-w-2xl mx-auto mb-8" style={{ color: "hsl(0, 0%, 70%)" }}>
+          <p className="text-white/80 font-body leading-relaxed max-w-2xl mx-auto mb-8">
             Official trailer revealing the struggle, the unheard stories, and dedication 
             of those working at Hawassa Regional Blood Bank.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm" style={{ color: "hsl(0, 0%, 70%)" }}>
+            <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm text-white/80">
               <Film className="w-4 h-4 text-primary" /> Trailer
             </span>
-            <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm" style={{ color: "hsl(0, 0%, 70%)" }}>
+            <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm text-white/80">
               <Droplets className="w-4 h-4 text-primary" /> Blood Donation
             </span>
-            <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm" style={{ color: "hsl(0, 0%, 70%)" }}>
+            <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm text-white/80">
               <Users className="w-4 h-4 text-primary" /> Community
             </span>
           </div>
