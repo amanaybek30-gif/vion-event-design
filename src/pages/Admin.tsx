@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Trash2, Plus, LogOut, Image as ImageIcon } from "lucide-react";
+import { Trash2, Plus, LogOut, Image as ImageIcon, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -22,6 +22,11 @@ interface GalleryImage {
   alt: string;
 }
 
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+
+const getPublicUrl = (path: string) =>
+  `${SUPABASE_URL}/storage/v1/object/public/images/${path}`;
+
 const Admin = () => {
   const navigate = useNavigate();
   const [authed, setAuthed] = useState(false);
@@ -33,10 +38,14 @@ const Admin = () => {
 
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [editItem, setEditItem] = useState<PortfolioItem | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
-  const [newGalleryUrl, setNewGalleryUrl] = useState("");
   const [newGalleryAlt, setNewGalleryAlt] = useState("");
+  const [galleryUploading, setGalleryUploading] = useState(false);
+
+  const portfolioFileRef = useRef<HTMLInputElement>(null);
+  const galleryFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -69,16 +78,33 @@ const Admin = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setError("Invalid credentials");
-    } else {
-      setError("");
-    }
+    if (error) setError("Invalid credentials");
+    else setError("");
   };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/");
+  };
+
+  const uploadImage = async (file: File, folder: string): Promise<string | null> => {
+    const ext = file.name.split(".").pop();
+    const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await supabase.storage.from("images").upload(path, file);
+    if (error) {
+      console.error("Upload error:", error);
+      return null;
+    }
+    return getPublicUrl(path);
+  };
+
+  const handlePortfolioImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editItem) return;
+    setUploading(true);
+    const url = await uploadImage(file, "portfolio");
+    if (url) setEditItem({ ...editItem, image: url });
+    setUploading(false);
   };
 
   const addPortfolioItem = () => {
@@ -113,15 +139,21 @@ const Admin = () => {
     fetchPortfolio();
   };
 
-  const addGalleryImage = async () => {
-    if (!newGalleryUrl.trim()) return;
-    await supabase.from("gallery_images").insert({
-      src: newGalleryUrl.trim(),
-      alt: newGalleryAlt.trim() || "Gallery image",
-    });
-    setNewGalleryUrl("");
-    setNewGalleryAlt("");
-    fetchGallery();
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setGalleryUploading(true);
+    const url = await uploadImage(file, "gallery");
+    if (url) {
+      await supabase.from("gallery_images").insert({
+        src: url,
+        alt: newGalleryAlt.trim() || "Gallery image",
+      });
+      setNewGalleryAlt("");
+      fetchGallery();
+    }
+    setGalleryUploading(false);
+    if (galleryFileRef.current) galleryFileRef.current.value = "";
   };
 
   const deleteGalleryImage = async (id: string) => {
@@ -149,26 +181,12 @@ const Admin = () => {
             Admin Access
           </h1>
           <form onSubmit={handleLogin} className="space-y-4">
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-secondary-foreground/10 border-border/30 text-secondary-foreground placeholder:text-secondary-foreground/40"
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-secondary-foreground/10 border-border/30 text-secondary-foreground placeholder:text-secondary-foreground/40"
-            />
-            {error && (
-              <p className="text-destructive text-sm text-center">{error}</p>
-            )}
-            <Button type="submit" className="w-full bg-gold-gradient text-primary-foreground">
-              Sign In
-            </Button>
+            <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}
+              className="bg-secondary-foreground/10 border-border/30 text-secondary-foreground placeholder:text-secondary-foreground/40" />
+            <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}
+              className="bg-secondary-foreground/10 border-border/30 text-secondary-foreground placeholder:text-secondary-foreground/40" />
+            {error && <p className="text-destructive text-sm text-center">{error}</p>}
+            <Button type="submit" className="w-full bg-gold-gradient text-primary-foreground">Sign In</Button>
           </form>
         </motion.div>
       </div>
@@ -186,20 +204,12 @@ const Admin = () => {
         </div>
 
         <div className="flex gap-4 mb-8 border-b border-border">
-          <button
-            onClick={() => setTab("portfolio")}
-            className={`pb-2 text-sm font-body tracking-wider uppercase transition-colors ${
-              tab === "portfolio" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"
-            }`}
-          >
+          <button onClick={() => setTab("portfolio")}
+            className={`pb-2 text-sm font-body tracking-wider uppercase transition-colors ${tab === "portfolio" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
             Portfolio
           </button>
-          <button
-            onClick={() => setTab("gallery")}
-            className={`pb-2 text-sm font-body tracking-wider uppercase transition-colors ${
-              tab === "gallery" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"
-            }`}
-          >
+          <button onClick={() => setTab("gallery")}
+            className={`pb-2 text-sm font-body tracking-wider uppercase transition-colors ${tab === "gallery" ? "text-primary border-b-2 border-primary" : "text-muted-foreground"}`}>
             Gallery
           </button>
         </div>
@@ -217,7 +227,20 @@ const Admin = () => {
               <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
                 <Input placeholder="Title" value={editItem.title} onChange={(e) => setEditItem({ ...editItem, title: e.target.value })} />
                 <Input placeholder="Category (e.g., Festival, Corporate)" value={editItem.category} onChange={(e) => setEditItem({ ...editItem, category: e.target.value })} />
-                <Input placeholder="Image URL" value={editItem.image} onChange={(e) => setEditItem({ ...editItem, image: e.target.value })} />
+
+                {/* Image upload */}
+                <div className="space-y-2">
+                  <label className="text-sm text-muted-foreground font-body">Image</label>
+                  {editItem.image && (
+                    <img src={editItem.image} alt="Preview" className="w-32 h-20 object-cover rounded-sm border border-border" />
+                  )}
+                  <input type="file" accept="image/*" ref={portfolioFileRef} onChange={handlePortfolioImageUpload} className="hidden" />
+                  <Button type="button" variant="outline" size="sm" disabled={uploading}
+                    onClick={() => portfolioFileRef.current?.click()}>
+                    <Upload className="w-4 h-4 mr-2" /> {uploading ? "Uploading..." : "Upload Image"}
+                  </Button>
+                </div>
+
                 <Textarea placeholder="Description" value={editItem.description} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })} />
                 <Input placeholder="Impact (e.g., 5,000+ attendees)" value={editItem.impact} onChange={(e) => setEditItem({ ...editItem, impact: e.target.value })} />
                 <div className="flex gap-2">
@@ -252,27 +275,25 @@ const Admin = () => {
           <div>
             <h2 className="font-display text-xl font-semibold mb-6">Gallery Images</h2>
             <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
-              <Input placeholder="Image URL" value={newGalleryUrl} onChange={(e) => setNewGalleryUrl(e.target.value)} />
               <Input placeholder="Alt text (optional)" value={newGalleryAlt} onChange={(e) => setNewGalleryAlt(e.target.value)} />
-              <Button onClick={addGalleryImage} className="bg-gold-gradient text-primary-foreground">
-                <ImageIcon className="w-4 h-4 mr-2" /> Add Image
+              <input type="file" accept="image/*" ref={galleryFileRef} onChange={handleGalleryUpload} className="hidden" />
+              <Button onClick={() => galleryFileRef.current?.click()} disabled={galleryUploading} className="bg-gold-gradient text-primary-foreground">
+                <Upload className="w-4 h-4 mr-2" /> {galleryUploading ? "Uploading..." : "Upload Image"}
               </Button>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {gallery.map((img) => (
                 <div key={img.id} className="relative group">
                   <img src={img.src} alt={img.alt} className="w-full h-32 object-cover rounded-sm" />
-                  <button
-                    onClick={() => deleteGalleryImage(img.id)}
-                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
+                  <button onClick={() => deleteGalleryImage(img.id)}
+                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Trash2 className="w-3 h-3" />
                   </button>
                 </div>
               ))}
             </div>
             {gallery.length === 0 && (
-              <p className="text-muted-foreground text-sm text-center py-8">No gallery images yet. Add image URLs above.</p>
+              <p className="text-muted-foreground text-sm text-center py-8">No gallery images yet. Upload images above.</p>
             )}
           </div>
         )}

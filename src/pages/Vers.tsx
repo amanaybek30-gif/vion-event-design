@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { ArrowRight, Users, QrCode, BarChart3, UserCircle, Brain, Settings, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import versHeroBg from "@/assets/vers-hero-bg.jpg";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16, filter: "blur(4px)" },
@@ -68,8 +69,13 @@ const Vers = () => {
       <Navbar />
 
       {/* Hero */}
-      <Section className="pt-32 pb-24 px-6">
-        <div className="container mx-auto max-w-4xl text-center">
+      <Section className="relative pt-32 pb-24 px-6">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${versHeroBg})` }}
+        />
+        <div className="absolute inset-0 bg-secondary/80" />
+        <div className="container mx-auto max-w-4xl text-center relative z-10">
           <motion.p
             variants={fadeUp}
             transition={{ duration: 0.6 }}
@@ -302,14 +308,6 @@ const Vers = () => {
               Browse Events
             </a>
           </motion.div>
-          <motion.p
-            variants={fadeUp}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="font-body text-[10px] tracking-widest uppercase mt-8"
-            style={{ color: "hsl(0,0%,40%)" }}
-          >
-            Powered by VERS
-          </motion.p>
         </div>
       </Section>
 
