@@ -50,7 +50,7 @@ const DocumentarySection = () => {
             of those working at Hawassa Regional Blood Bank.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm" style={{ color: "hsl(0, 0%, 70%)" }}>
+            <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm text-white/80">
               <Film className="w-4 h-4 text-primary" /> Trailer
             </span>
             <span className="inline-flex items-center gap-2 border border-border/30 px-4 py-2 rounded-sm font-body text-sm" style={{ color: "hsl(0, 0%, 70%)" }}>
