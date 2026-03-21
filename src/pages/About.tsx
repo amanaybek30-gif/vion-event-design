@@ -2,10 +2,32 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { usePageContent } from "@/hooks/usePageContent";
+
+const defaults = {
+  subtitle: "Who We Are",
+  title_start: "Not Just Events.",
+  title_highlight: "Experiences.",
+  description: "We are a full-service event company turning ideas into powerful experiences — from corporate forums to cultural activations and premium social events.",
+  pillar1_title: "Creativity",
+  pillar1_desc: "Bold ideas that push boundaries",
+  pillar2_title: "Precision",
+  pillar2_desc: "Flawless execution, every detail",
+  pillar3_title: "Storytelling",
+  pillar3_desc: "Narratives that resonate deeply",
+  extra: "More content coming soon. Stay tuned to learn more about our story, our team, and what drives us to create moments people remember.",
+};
 
 const About = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+  const { content: c } = usePageContent("about", defaults);
+
+  const pillars = [
+    { label: c.pillar1_title, desc: c.pillar1_desc },
+    { label: c.pillar2_title, desc: c.pillar2_desc },
+    { label: c.pillar3_title, desc: c.pillar3_desc },
+  ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -18,16 +40,14 @@ const About = () => {
             transition={{ duration: 0.8 }}
           >
             <p className="text-primary tracking-[0.3em] uppercase text-sm font-body mb-4">
-              Who We Are
+              {c.subtitle}
             </p>
             <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
-              Not Just Events.{" "}
-              <span className="text-gold-gradient">Experiences.</span>
+              {c.title_start}{" "}
+              <span className="text-gold-gradient">{c.title_highlight}</span>
             </h1>
             <p className="text-muted-foreground text-lg md:text-xl leading-relaxed font-body font-light max-w-3xl mx-auto">
-              We are a full-service event company turning ideas into powerful
-              experiences — from corporate forums to cultural activations and
-              premium social events.
+              {c.description}
             </p>
           </motion.div>
 
@@ -37,11 +57,7 @@ const About = () => {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="grid grid-cols-3 gap-8 mt-16"
           >
-            {[
-              { label: "Creativity", desc: "Bold ideas that push boundaries" },
-              { label: "Precision", desc: "Flawless execution, every detail" },
-              { label: "Storytelling", desc: "Narratives that resonate deeply" },
-            ].map((item) => (
+            {pillars.map((item) => (
               <div key={item.label} className="text-center">
                 <h3 className="text-primary font-display text-xl font-semibold mb-2">
                   {item.label}
@@ -57,10 +73,7 @@ const About = () => {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="mt-20 text-muted-foreground font-body text-lg leading-relaxed"
           >
-            <p>
-              More content coming soon. Stay tuned to learn more about our story, 
-              our team, and what drives us to create moments people remember.
-            </p>
+            <p>{c.extra}</p>
           </motion.div>
         </div>
       </section>
