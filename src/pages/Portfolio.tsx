@@ -1,11 +1,12 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Play, X, MapPin, Calendar, Briefcase } from "lucide-react";
+import { Play, MapPin, Calendar, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 
 interface PortfolioItem {
   id: string;
@@ -21,11 +22,14 @@ interface PortfolioItem {
 }
 
 const Portfolio = () => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
+  const heroRef = useRef(null);
+  const heroInView = useInView(heroRef, { once: true, margin: "-100px" });
   const [projects, setProjects] = useState<PortfolioItem[]>([]);
-  const [videoProject, setVideoProject] = useState<PortfolioItem | null>(null);
-  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const { scrollYProgress } = useScroll();
+  const headerY = useTransform(scrollYProgress, [0, 0.15], [0, -40]);
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0.85]);
 
   useEffect(() => {
     const fetchPortfolio = async () => {
@@ -40,24 +44,16 @@ const Portfolio = () => {
     fetchPortfolio();
   }, []);
 
-  const getEmbedUrl = (url: string) => {
-    // YouTube
-    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
-    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
-    // Google Drive
-    const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
-    if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
-    return url;
-  };
-
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <section className="pt-32 pb-20 px-6" ref={ref}>
+      <section className="pt-32 pb-20 px-6">
         <div className="container mx-auto max-w-6xl">
           <motion.div
+            ref={heroRef}
+            style={{ y: headerY, opacity: headerOpacity }}
             initial={{ opacity: 0, y: 40 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
+            animate={heroInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
             className="text-center mb-20"
           >
@@ -74,129 +70,156 @@ const Portfolio = () => {
               Portfolio items coming soon.
             </p>
           ) : (
-            <div className="space-y-24">
+            <div className="space-y-32">
               {projects.map((project, i) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 60 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.8, delay: i * 0.2 }}
-                  className="grid md:grid-cols-2 gap-12 items-center"
-                >
-                  <div className={i % 2 === 1 ? "md:order-2" : ""}>
-                    <div className="overflow-hidden rounded-sm">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-[350px] object-cover hover:scale-105 transition-transform duration-700"
-                      />
-                    </div>
-                  </div>
-                  <div className={i % 2 === 1 ? "md:order-1" : ""}>
-                    <span className="text-primary text-xs tracking-[0.3em] uppercase font-body">
-                      {project.category}
-                    </span>
-                    <h2 className="font-display text-3xl md:text-4xl font-bold mt-2 mb-4">
-                      {project.title}
-                    </h2>
-                    <p className="text-muted-foreground font-body leading-relaxed mb-4">
-                      {project.description}
-                    </p>
-
-                    {/* Meta details */}
-                    <div className="flex flex-wrap gap-4 mb-4 text-sm font-body">
-                      {project.service_provided && (
-                        <span className="flex items-center gap-1.5 text-muted-foreground">
-                          <Briefcase className="w-3.5 h-3.5 text-primary" />
-                          {project.service_provided}
-                        </span>
-                      )}
-                      {project.event_date && (
-                        <span className="flex items-center gap-1.5 text-muted-foreground">
-                          <Calendar className="w-3.5 h-3.5 text-primary" />
-                          {project.event_date}
-                        </span>
-                      )}
-                      {project.location && (
-                        <span className="flex items-center gap-1.5 text-muted-foreground">
-                          <MapPin className="w-3.5 h-3.5 text-primary" />
-                          {project.location}
-                        </span>
-                      )}
-                    </div>
-
-                    <p className="text-primary/80 text-sm font-body tracking-wide mb-4">
-                      {project.impact}
-                    </p>
-
-                    {project.video_urls.length > 0 && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="border-primary/30 text-primary hover:bg-primary/10"
-                        onClick={() => setVideoProject(project)}
-                      >
-                        <Play className="w-4 h-4 mr-2" />
-                        Watch Event Videos ({project.video_urls.length})
-                      </Button>
-                    )}
-                  </div>
-                </motion.div>
+                <PortfolioCard key={project.id} project={project} index={i} onWatchVideos={() => navigate(`/portfolio/${project.id}/videos`)} />
               ))}
             </div>
           )}
         </div>
       </section>
-
-      {/* Video Gallery Dialog */}
-      <Dialog open={!!videoProject} onOpenChange={() => { setVideoProject(null); setActiveVideo(null); }}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="font-display text-2xl">
-              {videoProject?.title} — Event Videos
-            </DialogTitle>
-          </DialogHeader>
-
-          {activeVideo ? (
-            <div className="space-y-4">
-              <Button variant="ghost" size="sm" onClick={() => setActiveVideo(null)}>
-                ← Back to videos
-              </Button>
-              <div className="aspect-video w-full rounded-sm overflow-hidden bg-black">
-                <iframe
-                  src={getEmbedUrl(activeVideo)}
-                  className="w-full h-full"
-                  allowFullScreen
-                  allow="autoplay; encrypted-media"
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {videoProject?.video_urls.map((url, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveVideo(url)}
-                  className="group relative aspect-video bg-muted rounded-sm overflow-hidden border border-border hover:border-primary/50 transition-colors"
-                >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-14 h-14 rounded-full bg-primary/90 flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Play className="w-6 h-6 text-primary-foreground ml-0.5" />
-                    </div>
-                  </div>
-                  <p className="absolute bottom-3 left-3 text-sm font-body text-foreground/80">
-                    Video {idx + 1}
-                  </p>
-                </button>
-              ))}
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
       <Footer />
     </div>
   );
 };
+
+function PortfolioCard({ project, index, onWatchVideos }: { project: PortfolioItem; index: number; onWatchVideos: () => void }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const isEven = index % 2 === 0;
+  const services = project.service_provided
+    ? project.service_provided.split(",").map((s) => s.trim()).filter(Boolean)
+    : [];
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 80 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+      className="grid md:grid-cols-2 gap-12 items-center"
+    >
+      {/* Image */}
+      <div className={isEven ? "" : "md:order-2"}>
+        <motion.div
+          className="overflow-hidden rounded-sm group cursor-pointer"
+          whileHover={{ scale: 1.01 }}
+          transition={{ duration: 0.4 }}
+        >
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-[350px] object-cover group-hover:scale-105 transition-transform duration-700"
+          />
+        </motion.div>
+      </div>
+
+      {/* Content: category → title → description → impact → date/location → services → videos */}
+      <div className={isEven ? "" : "md:order-1"}>
+        {/* Event Type / Category */}
+        <motion.span
+          initial={{ opacity: 0, x: -20 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="text-primary text-xs tracking-[0.3em] uppercase font-body"
+        >
+          {project.category}
+        </motion.span>
+
+        {/* Event Name / Title */}
+        <motion.h2
+          initial={{ opacity: 0, x: -20 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="font-display text-3xl md:text-4xl font-bold mt-2 mb-4"
+        >
+          {project.title}
+        </motion.h2>
+
+        {/* Main Description */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="text-muted-foreground font-body leading-relaxed mb-4"
+        >
+          {project.description}
+        </motion.p>
+
+        {/* Impact */}
+        {project.impact && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.45 }}
+            className="text-primary/80 text-sm font-body tracking-wide mb-5 font-medium"
+          >
+            ✦ {project.impact}
+          </motion.p>
+        )}
+
+        {/* Date & Location */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.5 }}
+          className="flex flex-wrap gap-4 mb-5 text-sm font-body"
+        >
+          {project.event_date && (
+            <span className="flex items-center gap-1.5 text-muted-foreground">
+              <Calendar className="w-3.5 h-3.5 text-primary" />
+              {project.event_date}
+            </span>
+          )}
+          {project.location && (
+            <span className="flex items-center gap-1.5 text-muted-foreground">
+              <MapPin className="w-3.5 h-3.5 text-primary" />
+              {project.location}
+            </span>
+          )}
+        </motion.div>
+
+        {/* Services as non-clickable tag buttons */}
+        {services.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ duration: 0.5, delay: 0.55 }}
+            className="flex flex-wrap gap-2 mb-6"
+          >
+            {services.map((service) => (
+              <Badge
+                key={service}
+                variant="outline"
+                className="border-primary/30 text-primary bg-primary/5 cursor-default hover:bg-primary/5 font-body text-xs tracking-wide px-3 py-1"
+              >
+                <Briefcase className="w-3 h-3 mr-1.5" />
+                {service}
+              </Badge>
+            ))}
+          </motion.div>
+        )}
+
+        {/* Watch Event Videos button */}
+        {project.video_urls.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
+            <Button
+              variant="outline"
+              className="border-primary/40 text-primary hover:bg-primary/10 hover:scale-[1.02] transition-all duration-300 group"
+              onClick={onWatchVideos}
+            >
+              <Play className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+              Watch Event Videos ({project.video_urls.length})
+            </Button>
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
 
 export default Portfolio;

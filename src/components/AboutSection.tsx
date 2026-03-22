@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { usePageContent } from "@/hooks/usePageContent";
 
@@ -53,13 +52,26 @@ const AboutSection = () => {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="grid grid-cols-3 gap-8 mt-16"
         >
-          {pillars.map((item) => (
-            <div key={item.label} className="text-center">
+          {pillars.map((item, i) => (
+            <motion.div
+              key={item.label}
+              className="text-center group"
+              whileHover={{ y: -6 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={inView ? { scale: 1 } : {}}
+                transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
+                className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors"
+              >
+                <span className="text-primary font-display text-lg font-bold">{String(i + 1).padStart(2, "0")}</span>
+              </motion.div>
               <h3 className="text-primary font-display text-xl font-semibold mb-2">
                 {item.label}
               </h3>
               <p className="text-white/60 text-sm font-body">{item.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
       </div>

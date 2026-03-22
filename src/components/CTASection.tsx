@@ -34,13 +34,13 @@ const CTASection = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
             to="/contact"
-            className="bg-gold-gradient text-primary-foreground px-10 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:opacity-90 transition-opacity"
+            className="bg-gold-gradient text-primary-foreground px-10 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:opacity-90 transition-all hover:scale-[1.03] duration-300"
           >
             {c.cta1}
           </Link>
           <Link
             to="/contact"
-            className="border border-primary/40 px-10 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:bg-primary/10 transition-colors text-white"
+            className="border border-primary/40 px-10 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:bg-primary/10 transition-all hover:scale-[1.03] duration-300 text-white"
           >
             {c.cta2}
           </Link>

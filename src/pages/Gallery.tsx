@@ -1,8 +1,9 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface GalleryImage {
   id: string;
@@ -14,7 +15,7 @@ const Gallery = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [images, setImages] = useState<GalleryImage[]>([]);
-  const [selected, setSelected] = useState<GalleryImage | null>(null);
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -23,6 +24,12 @@ const Gallery = () => {
     };
     fetchImages();
   }, []);
+
+  const navigate = (dir: 1 | -1) => {
+    if (selectedIdx === null) return;
+    const next = (selectedIdx + dir + images.length) % images.length;
+    setSelectedIdx(next);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -55,13 +62,14 @@ const Gallery = () => {
                   initial={{ opacity: 0, y: 30 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.6, delay: i * 0.05 }}
-                  className="break-inside-avoid cursor-pointer"
-                  onClick={() => setSelected(img)}
+                  whileHover={{ scale: 1.02 }}
+                  className="break-inside-avoid cursor-pointer overflow-hidden rounded-sm group"
+                  onClick={() => setSelectedIdx(i)}
                 >
                   <img
                     src={img.src}
                     alt={img.alt}
-                    className="w-full rounded-sm hover:scale-[1.02] transition-transform duration-500"
+                    className="w-full rounded-sm group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
                 </motion.div>
@@ -71,18 +79,50 @@ const Gallery = () => {
         </div>
       </section>
 
-      {selected && (
-        <div
-          className="fixed inset-0 z-50 bg-secondary/90 flex items-center justify-center p-4"
-          onClick={() => setSelected(null)}
-        >
-          <img
-            src={selected.src}
-            alt={selected.alt}
-            className="max-w-full max-h-[90vh] object-contain rounded-sm"
-          />
-        </div>
-      )}
+      {/* Lightbox with navigation */}
+      <AnimatePresence>
+        {selectedIdx !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+            onClick={() => setSelectedIdx(null)}
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); navigate(-1); }}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-2 transition-colors"
+            >
+              <ChevronLeft className="w-8 h-8" />
+            </button>
+            <motion.img
+              key={selectedIdx}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              src={images[selectedIdx].src}
+              alt={images[selectedIdx].alt}
+              className="max-w-full max-h-[90vh] object-contain rounded-sm"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              onClick={(e) => { e.stopPropagation(); navigate(1); }}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white p-2 transition-colors"
+            >
+              <ChevronRight className="w-8 h-8" />
+            </button>
+            <button
+              onClick={() => setSelectedIdx(null)}
+              className="absolute top-4 right-4 text-white/60 hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <p className="absolute bottom-4 text-white/40 font-body text-sm">
+              {selectedIdx + 1} / {images.length}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </div>
