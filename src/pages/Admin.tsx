@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Trash2, Plus, LogOut, Upload } from "lucide-react";
+import { Trash2, Plus, LogOut, Upload, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,10 @@ interface PortfolioItem {
   category: string;
   description: string;
   impact: string;
+  service_provided: string;
+  event_date: string;
+  location: string;
+  video_urls: string[];
 }
 
 interface GalleryImage {
@@ -40,6 +44,7 @@ const Admin = () => {
   const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
   const [editItem, setEditItem] = useState<PortfolioItem | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [newVideoUrl, setNewVideoUrl] = useState("");
 
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
   const [newGalleryAlt, setNewGalleryAlt] = useState("");
@@ -68,7 +73,10 @@ const Admin = () => {
 
   const fetchPortfolio = async () => {
     const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
-    if (data) setPortfolio(data);
+    if (data) setPortfolio(data.map((d: any) => ({
+      ...d,
+      video_urls: Array.isArray(d.video_urls) ? d.video_urls : [],
+    })));
   };
 
   const fetchGallery = async () => {
@@ -106,21 +114,32 @@ const Admin = () => {
   };
 
   const addPortfolioItem = () => {
-    setEditItem({ id: "", image: "", title: "", category: "", description: "", impact: "" });
+    setEditItem({ id: "", image: "", title: "", category: "", description: "", impact: "", service_provided: "", event_date: "", location: "", video_urls: [] });
+  };
+
+  const addVideoUrl = () => {
+    if (!editItem || !newVideoUrl.trim()) return;
+    setEditItem({ ...editItem, video_urls: [...editItem.video_urls, newVideoUrl.trim()] });
+    setNewVideoUrl("");
+  };
+
+  const removeVideoUrl = (idx: number) => {
+    if (!editItem) return;
+    setEditItem({ ...editItem, video_urls: editItem.video_urls.filter((_, i) => i !== idx) });
   };
 
   const saveEditItem = async () => {
     if (!editItem) return;
+    const payload = {
+      image: editItem.image, title: editItem.title, category: editItem.category,
+      description: editItem.description, impact: editItem.impact,
+      service_provided: editItem.service_provided, event_date: editItem.event_date,
+      location: editItem.location, video_urls: editItem.video_urls,
+    };
     if (editItem.id) {
-      await supabase.from("portfolio_items").update({
-        image: editItem.image, title: editItem.title, category: editItem.category,
-        description: editItem.description, impact: editItem.impact,
-      }).eq("id", editItem.id);
+      await supabase.from("portfolio_items").update(payload).eq("id", editItem.id);
     } else {
-      await supabase.from("portfolio_items").insert({
-        image: editItem.image, title: editItem.title, category: editItem.category,
-        description: editItem.description, impact: editItem.impact,
-      });
+      await supabase.from("portfolio_items").insert(payload);
     }
     setEditItem(null);
     fetchPortfolio();
@@ -228,7 +247,42 @@ const Admin = () => {
                   </Button>
                 </div>
                 <Textarea placeholder="Description" value={editItem.description} onChange={(e) => setEditItem({ ...editItem, description: e.target.value })} />
-                <Input placeholder="Impact" value={editItem.impact} onChange={(e) => setEditItem({ ...editItem, impact: e.target.value })} />
+                <Input placeholder="Impact (e.g. 5,000+ attendees · 3 stages)" value={editItem.impact} onChange={(e) => setEditItem({ ...editItem, impact: e.target.value })} />
+                
+                {/* New fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <Input placeholder="Service Provided" value={editItem.service_provided} onChange={(e) => setEditItem({ ...editItem, service_provided: e.target.value })} />
+                  <Input placeholder="Date (e.g. March 2025)" value={editItem.event_date} onChange={(e) => setEditItem({ ...editItem, event_date: e.target.value })} />
+                  <Input placeholder="Location" value={editItem.location} onChange={(e) => setEditItem({ ...editItem, location: e.target.value })} />
+                </div>
+
+                {/* Video URLs */}
+                <div className="space-y-3">
+                  <label className="text-sm text-muted-foreground font-body flex items-center gap-2">
+                    <Video className="w-4 h-4" /> Event Videos
+                  </label>
+                  {editItem.video_urls.map((url, idx) => (
+                    <div key={idx} className="flex gap-2 items-center">
+                      <Input value={url} readOnly className="flex-1 text-xs" />
+                      <Button variant="ghost" size="icon" onClick={() => removeVideoUrl(idx)}>
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Paste YouTube or Google Drive video URL"
+                      value={newVideoUrl}
+                      onChange={(e) => setNewVideoUrl(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addVideoUrl())}
+                      className="flex-1"
+                    />
+                    <Button type="button" variant="outline" size="sm" onClick={addVideoUrl}>
+                      <Plus className="w-4 h-4 mr-1" /> Add
+                    </Button>
+                  </div>
+                </div>
+
                 <div className="flex gap-2">
                   <Button onClick={saveEditItem} className="bg-gold-gradient text-primary-foreground">Save</Button>
                   <Button variant="outline" onClick={() => setEditItem(null)}>Cancel</Button>
@@ -242,7 +296,9 @@ const Admin = () => {
                   {item.image && <img src={item.image} alt={item.title} className="w-20 h-14 object-cover rounded-sm" />}
                   <div className="flex-1">
                     <p className="font-semibold">{item.title}</p>
-                    <p className="text-muted-foreground text-xs">{item.category}</p>
+                    <p className="text-muted-foreground text-xs">{item.category}
+                      {item.video_urls.length > 0 && <span className="ml-2 text-primary">· {item.video_urls.length} video{item.video_urls.length > 1 ? "s" : ""}</span>}
+                    </p>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setEditItem({ ...item })}>Edit</Button>
                   <Button variant="ghost" size="icon" onClick={() => deletePortfolioItem(item.id)}>
