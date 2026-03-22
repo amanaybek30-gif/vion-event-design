@@ -1,39 +1,55 @@
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
 import heroImg from "@/assets/hero-event.jpg";
 
 const HeroSection = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background image */}
-      <div className="absolute inset-0">
+    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Parallax background */}
+      <motion.div className="absolute inset-0" style={{ y: bgY }}>
         <img
           src={heroImg}
           alt="Premium event with dramatic gold lighting"
-          className="w-full h-full object-cover"
+          className="w-full h-[120%] object-cover"
         />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-      </div>
+      </motion.div>
 
-      {/* Floating particles */}
+      {/* Animated particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(6)].map((_, i) => (
-          <div
+        {[...Array(12)].map((_, i) => (
+          <motion.div
             key={i}
             className="absolute w-1 h-1 rounded-full bg-primary/40"
             style={{
-              left: `${15 + i * 15}%`,
-              top: `${20 + (i % 3) * 25}%`,
-              animation: `float-particle ${4 + i}s ease-in-out infinite`,
-              animationDelay: `${i * 0.8}s`,
+              left: `${10 + i * 7}%`,
+              top: `${15 + (i % 4) * 20}%`,
+            }}
+            animate={{
+              y: [0, -30, 0],
+              opacity: [0.2, 0.8, 0.2],
+              scale: [1, 1.5, 1],
+            }}
+            transition={{
+              duration: 4 + i * 0.5,
+              repeat: Infinity,
+              delay: i * 0.4,
+              ease: "easeInOut",
             }}
           />
         ))}
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      {/* Content with parallax */}
+      <motion.div className="relative z-10 text-center px-6 max-w-4xl mx-auto" style={{ y: textY, opacity }}>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -71,27 +87,31 @@ const HeroSection = () => {
         >
           <Link
             to="/portfolio"
-            className="bg-gold-gradient text-primary-foreground px-8 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:opacity-90 transition-opacity"
+            className="bg-gold-gradient text-primary-foreground px-8 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:opacity-90 transition-all hover:scale-[1.03] duration-300"
           >
             View Our Work
           </Link>
           <Link
             to="/contact"
-            className="border border-primary/40 text-white px-8 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:bg-primary/10 transition-colors"
+            className="border border-primary/40 text-white px-8 py-4 font-body text-sm font-semibold tracking-widest uppercase hover:bg-primary/10 transition-all hover:scale-[1.03] duration-300"
           >
             Plan Your Event
           </Link>
         </motion.div>
-      </div>
+      </motion.div>
 
-      {/* Scroll indicator */}
+      {/* Animated scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <div className="w-[1px] h-16 bg-gradient-to-b from-primary/60 to-transparent" />
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          className="w-[1px] h-16 bg-gradient-to-b from-primary/60 to-transparent"
+        />
       </motion.div>
     </section>
   );

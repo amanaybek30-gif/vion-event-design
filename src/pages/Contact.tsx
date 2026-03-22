@@ -23,6 +23,38 @@ const Contact = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const { content: c } = usePageContent("contact", defaults);
 
+  const contactItems = [
+    {
+      icon: Mail,
+      label: c.email_label,
+      content: (
+        <a
+          href={`mailto:${c.email}`}
+          className="inline-block bg-gold-gradient text-primary-foreground px-6 py-3 text-sm font-semibold tracking-wider uppercase rounded-sm hover:opacity-90 hover:scale-[1.03] transition-all duration-300 font-body"
+        >
+          Send Email
+        </a>
+      ),
+    },
+    {
+      icon: Phone,
+      label: c.phone_label,
+      content: (
+        <a
+          href={`tel:${c.phone.replace(/\s/g, "")}`}
+          className="inline-block bg-gold-gradient text-primary-foreground px-6 py-3 text-sm font-semibold tracking-wider uppercase rounded-sm hover:opacity-90 hover:scale-[1.03] transition-all duration-300 font-body"
+        >
+          {c.phone}
+        </a>
+      ),
+    },
+    {
+      icon: MapPin,
+      label: c.locations_label,
+      content: <p className="text-muted-foreground font-body text-sm">{c.locations}</p>,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -51,37 +83,25 @@ const Contact = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="grid md:grid-cols-3 gap-12"
           >
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <Mail className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-display text-lg font-semibold">{c.email_label}</h3>
-              <a
-                href={`mailto:${c.email}`}
-                className="inline-block bg-gold-gradient text-primary-foreground px-6 py-3 text-sm font-semibold tracking-wider uppercase rounded-sm hover:opacity-90 transition-opacity font-body"
+            {contactItems.map((item, i) => (
+              <motion.div
+                key={item.label}
+                className="text-center space-y-4"
+                whileHover={{ y: -6 }}
+                transition={{ duration: 0.3 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
               >
-                Send Email
-              </a>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <Phone className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-display text-lg font-semibold">{c.phone_label}</h3>
-              <a
-                href={`tel:${c.phone.replace(/\s/g, "")}`}
-                className="inline-block bg-gold-gradient text-primary-foreground px-6 py-3 text-sm font-semibold tracking-wider uppercase rounded-sm hover:opacity-90 transition-opacity font-body"
-              >
-                {c.phone}
-              </a>
-            </div>
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
-                <MapPin className="w-7 h-7 text-primary" />
-              </div>
-              <h3 className="font-display text-lg font-semibold">{c.locations_label}</h3>
-              <p className="text-muted-foreground font-body text-sm">{c.locations}</p>
-            </div>
+                <motion.div
+                  className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto"
+                  whileHover={{ scale: 1.1 }}
+                >
+                  <item.icon className="w-7 h-7 text-primary" />
+                </motion.div>
+                <h3 className="font-display text-lg font-semibold">{item.label}</h3>
+                {item.content}
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>

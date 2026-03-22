@@ -52,16 +52,20 @@ const ServicesSection = () => {
               initial={{ opacity: 0, y: 40 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.2 }}
-              className="border border-border rounded-sm p-8 hover:border-primary/40 transition-colors duration-500 group"
+              whileHover={{ y: -8, borderColor: "hsl(var(--primary) / 0.5)" }}
+              className="border border-border rounded-sm p-8 hover:border-primary/40 transition-all duration-500 group cursor-default"
             >
-              <cat.icon className="w-8 h-8 text-primary mb-6 group-hover:scale-110 transition-transform duration-300" />
+              <cat.icon className="w-8 h-8 text-primary mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300" />
               <h3 className="font-display text-xl font-semibold mb-4">
                 {cat.title}
               </h3>
               <ul className="space-y-2">
                 {cat.items.map((item) => (
                   <li key={item} className="text-white/60 font-body text-sm flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />
+                    <motion.span
+                      className="w-1.5 h-1.5 rounded-full bg-primary/60"
+                      whileHover={{ scale: 2 }}
+                    />
                     {item}
                   </li>
                 ))}

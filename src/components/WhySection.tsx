@@ -55,9 +55,15 @@ const WhySection = () => {
               initial={{ opacity: 0, y: 40 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.15 }}
-              className="text-center p-6"
+              whileHover={{ y: -8 }}
+              className="text-center p-6 rounded-sm hover:bg-white/5 transition-colors duration-300 cursor-default"
             >
-              <r.icon className="w-8 h-8 text-primary mx-auto mb-4" />
+              <motion.div
+                whileHover={{ rotate: 10, scale: 1.15 }}
+                transition={{ duration: 0.3 }}
+              >
+                <r.icon className="w-8 h-8 text-primary mx-auto mb-4" />
+              </motion.div>
               <h3 className="font-display text-lg font-semibold mb-2">{r.title}</h3>
               <p className="text-white/60 font-body text-sm leading-relaxed">
                 {r.desc}

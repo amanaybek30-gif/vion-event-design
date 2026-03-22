@@ -77,9 +77,12 @@ const Services = () => {
                 initial={{ opacity: 0, y: 40 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
-                className="border border-border rounded-sm p-8 hover:border-primary/40 transition-colors duration-500 group"
+                whileHover={{ y: -8, borderColor: "hsl(var(--primary) / 0.5)" }}
+                className="border border-border rounded-sm p-8 hover:border-primary/40 transition-all duration-500 group cursor-default"
               >
-                <service.icon className="w-8 h-8 text-primary mb-5 group-hover:scale-110 transition-transform duration-300" />
+                <motion.div whileHover={{ rotate: 5, scale: 1.1 }} transition={{ duration: 0.3 }}>
+                  <service.icon className="w-8 h-8 text-primary mb-5 group-hover:scale-110 transition-transform duration-300" />
+                </motion.div>
                 <h3 className="font-display text-xl font-semibold mb-3">{service.title}</h3>
                 <p className="text-muted-foreground font-body text-sm leading-relaxed">{service.description}</p>
               </motion.div>
