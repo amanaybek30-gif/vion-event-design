@@ -7,6 +7,8 @@ const defaults = {
   line2: "We design moments people remember.",
 };
 
+const DRIVE_VIDEO_ID = "1bTDqeWvrQmENKYJgttDw-5Q3yaRD7LY_";
+
 const BrandStatement = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
@@ -16,7 +18,18 @@ const BrandStatement = () => {
 
   return (
     <section className="py-32 px-6 relative overflow-hidden" ref={ref}>
-      <div className="absolute inset-0 animate-shimmer" />
+      {/* Video background */}
+      <div className="absolute inset-0 z-0">
+        <iframe
+          src={`https://drive.google.com/file/d/${DRIVE_VIDEO_ID}/preview`}
+          className="w-full h-full object-cover pointer-events-none"
+          style={{ border: "none", position: "absolute", top: "-60px", left: 0, width: "100%", height: "calc(100% + 120px)" }}
+          allow="autoplay"
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-secondary/80" />
+      </div>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}

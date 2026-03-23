@@ -14,6 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
+      carousel_images: {
+        Row: {
+          alt: string
+          created_at: string
+          id: string
+          sort_order: number
+          src: string
+        }
+        Insert: {
+          alt?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          src?: string
+        }
+        Update: {
+          alt?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+          src?: string
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
           alt: string

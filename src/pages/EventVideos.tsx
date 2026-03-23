@@ -24,7 +24,12 @@ const getEmbedUrl = (url: string) => {
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
   const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+  // Direct video URL (uploaded file)
   return url;
+};
+
+const isDirectVideo = (url: string) => {
+  return /\.(mp4|webm|ogg|mov)(\?|$)/i.test(url);
 };
 
 const getYouTubeThumbnail = (url: string) => {
@@ -32,6 +37,7 @@ const getYouTubeThumbnail = (url: string) => {
   if (ytMatch) return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
   return null;
 };
+
 
 const EventVideos = () => {
   const { id } = useParams<{ id: string }>();
@@ -95,12 +101,23 @@ const EventVideos = () => {
               className="mb-12"
             >
               <div className="aspect-video w-full rounded-sm overflow-hidden bg-secondary border border-border/30">
-                <iframe
-                  src={getEmbedUrl(activeVideo)}
-                  className="w-full h-full"
-                  allowFullScreen
-                  allow="autoplay; encrypted-media"
-                />
+                {isDirectVideo(activeVideo) ? (
+                  <video
+                    src={activeVideo}
+                    className="w-full h-full"
+                    controls
+                    autoPlay
+                    preload="metadata"
+                  />
+                ) : (
+                  <iframe
+                    src={getEmbedUrl(activeVideo)}
+                    className="w-full h-full"
+                    allowFullScreen
+                    allow="autoplay; encrypted-media"
+                    loading="lazy"
+                  />
+                )}
               </div>
               <button
                 onClick={() => setActiveVideo(null)}
