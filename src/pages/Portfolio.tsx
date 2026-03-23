@@ -47,7 +47,7 @@ const Portfolio = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <section className="pt-32 pb-20 px-6">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
         <div className="container mx-auto max-w-6xl">
           <motion.div
             ref={heroRef}
@@ -55,12 +55,12 @@ const Portfolio = () => {
             initial={{ opacity: 0, y: 40 }}
             animate={heroInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            className="text-center mb-12 sm:mb-20"
           >
-            <p className="text-primary tracking-[0.3em] uppercase text-sm font-body mb-4">
+            <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
               Portfolio
             </p>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
               Our Work <span className="text-gold-gradient">Speaks</span>
             </h1>
           </motion.div>
@@ -70,7 +70,7 @@ const Portfolio = () => {
               Portfolio items coming soon.
             </p>
           ) : (
-            <div className="space-y-32">
+            <div className="space-y-16 sm:space-y-32">
               {projects.map((project, i) => (
                 <PortfolioCard key={project.id} project={project} index={i} onWatchVideos={() => navigate(`/portfolio/${project.id}/videos`)} />
               ))}
@@ -97,7 +97,7 @@ function PortfolioCard({ project, index, onWatchVideos }: { project: PortfolioIt
       initial={{ opacity: 0, y: 80 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      className="grid md:grid-cols-2 gap-12 items-center"
+      className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12 items-center"
     >
       {/* Image */}
       <div className={isEven ? "" : "md:order-2"}>
@@ -109,98 +109,91 @@ function PortfolioCard({ project, index, onWatchVideos }: { project: PortfolioIt
           <img
             src={project.image}
             alt={project.title}
-            className="w-full h-[350px] object-cover group-hover:scale-105 transition-transform duration-700"
+            className="w-full h-[220px] sm:h-[350px] object-cover group-hover:scale-105 transition-transform duration-700"
           />
         </motion.div>
       </div>
 
-      {/* Content: category → title → description → impact → date/location → services → videos */}
+      {/* Content */}
       <div className={isEven ? "" : "md:order-1"}>
-        {/* Event Type / Category */}
         <motion.span
           initial={{ opacity: 0, x: -20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-primary text-xs tracking-[0.3em] uppercase font-body"
+          className="text-primary text-xs tracking-[0.2em] sm:tracking-[0.3em] uppercase font-body"
         >
           {project.category}
         </motion.span>
 
-        {/* Event Name / Title */}
         <motion.h2
           initial={{ opacity: 0, x: -20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="font-display text-3xl md:text-4xl font-bold mt-2 mb-4"
+          className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mt-1 sm:mt-2 mb-3 sm:mb-4"
         >
           {project.title}
         </motion.h2>
 
-        {/* Main Description */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-muted-foreground font-body leading-relaxed mb-4"
+          className="text-muted-foreground font-body text-sm leading-relaxed mb-3 sm:mb-4"
         >
           {project.description}
         </motion.p>
 
-        {/* Impact */}
         {project.impact && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.45 }}
-            className="text-primary/80 text-sm font-body tracking-wide mb-5 font-medium"
+            className="text-primary/80 text-xs sm:text-sm font-body tracking-wide mb-4 sm:mb-5 font-medium"
           >
             ✦ {project.impact}
           </motion.p>
         )}
 
-        {/* Date & Location */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.5 }}
-          className="flex flex-wrap gap-4 mb-5 text-sm font-body"
+          className="flex flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-5 text-xs sm:text-sm font-body"
         >
           {project.event_date && (
             <span className="flex items-center gap-1.5 text-muted-foreground">
-              <Calendar className="w-3.5 h-3.5 text-primary" />
+              <Calendar className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-primary" />
               {project.event_date}
             </span>
           )}
           {project.location && (
             <span className="flex items-center gap-1.5 text-muted-foreground">
-              <MapPin className="w-3.5 h-3.5 text-primary" />
+              <MapPin className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-primary" />
               {project.location}
             </span>
           )}
         </motion.div>
 
-        {/* Services as non-clickable tag buttons */}
         {services.length > 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
             transition={{ duration: 0.5, delay: 0.55 }}
-            className="flex flex-wrap gap-2 mb-6"
+            className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6"
           >
             {services.map((service) => (
               <Badge
                 key={service}
                 variant="outline"
-                className="border-primary/30 text-primary bg-primary/5 cursor-default hover:bg-primary/5 font-body text-xs tracking-wide px-3 py-1"
+                className="border-primary/30 text-primary bg-primary/5 cursor-default hover:bg-primary/5 font-body text-[10px] sm:text-xs tracking-wide px-2 sm:px-3 py-0.5 sm:py-1"
               >
-                <Briefcase className="w-3 h-3 mr-1.5" />
+                <Briefcase className="w-2.5 sm:w-3 h-2.5 sm:h-3 mr-1" />
                 {service}
               </Badge>
             ))}
           </motion.div>
         )}
 
-        {/* Watch Event Videos button */}
         {project.video_urls.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -209,10 +202,11 @@ function PortfolioCard({ project, index, onWatchVideos }: { project: PortfolioIt
           >
             <Button
               variant="outline"
-              className="border-primary/40 text-primary hover:bg-primary/10 hover:scale-[1.02] transition-all duration-300 group"
+              size="sm"
+              className="border-primary/40 text-primary hover:bg-primary/10 hover:scale-[1.02] transition-all duration-300 group text-xs sm:text-sm"
               onClick={onWatchVideos}
             >
-              <Play className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+              <Play className="w-3.5 sm:w-4 h-3.5 sm:h-4 mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform" />
               Watch Event Videos ({project.video_urls.length})
             </Button>
           </motion.div>

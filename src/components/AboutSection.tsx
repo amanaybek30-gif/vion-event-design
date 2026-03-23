@@ -27,21 +27,21 @@ const AboutSection = () => {
   ];
 
   return (
-    <section id="about" className="py-32 px-6 section-dark" ref={ref}>
+    <section id="about" className="py-16 sm:py-32 px-4 sm:px-6 section-dark" ref={ref}>
       <div className="container mx-auto max-w-4xl text-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
         >
-          <p className="text-primary tracking-[0.3em] uppercase text-sm font-body mb-4">
+          <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
             {c.subtitle}
           </p>
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-8">
+          <h2 className="font-display text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8">
             {c.title_start}{" "}
             <span className="text-gold-gradient">{c.title_highlight}</span>
           </h2>
-          <p className="text-white/70 text-lg md:text-xl leading-relaxed font-body font-light max-w-3xl mx-auto">
+          <p className="text-white/70 text-sm sm:text-lg md:text-xl leading-relaxed font-body font-light max-w-3xl mx-auto">
             {c.description}
           </p>
         </motion.div>
@@ -50,7 +50,7 @@ const AboutSection = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="grid grid-cols-3 gap-8 mt-16"
+          className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-10 sm:mt-16"
         >
           {pillars.map((item, i) => (
             <motion.div
@@ -67,10 +67,10 @@ const AboutSection = () => {
               >
                 <span className="text-primary font-display text-lg font-bold">{String(i + 1).padStart(2, "0")}</span>
               </motion.div>
-              <h3 className="text-primary font-display text-xl font-semibold mb-2">
+              <h3 className="text-primary font-display text-lg sm:text-xl font-semibold mb-2">
                 {item.label}
               </h3>
-              <p className="text-white/60 text-sm font-body">{item.desc}</p>
+              <p className="text-white/60 text-xs sm:text-sm font-body">{item.desc}</p>
             </motion.div>
           ))}
         </motion.div>

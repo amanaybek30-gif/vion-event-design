@@ -29,23 +29,23 @@ const ServicesSection = () => {
   ];
 
   return (
-    <section id="services" className="py-32 px-6" ref={ref}>
+    <section id="services" className="py-16 sm:py-32 px-4 sm:px-6" ref={ref}>
       <div className="container mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          className="text-center mb-12 sm:mb-20"
         >
-          <p className="text-primary tracking-[0.3em] uppercase text-sm font-body mb-4">
+          <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
             {c.subtitle}
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-bold">
+          <h2 className="font-display text-2xl sm:text-4xl md:text-5xl font-bold">
             {c.title_start} <span className="text-gold-gradient">{c.title_highlight}</span>
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.title}
@@ -53,19 +53,16 @@ const ServicesSection = () => {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.2 }}
               whileHover={{ y: -8, borderColor: "hsl(var(--primary) / 0.5)" }}
-              className="border border-border rounded-sm p-8 hover:border-primary/40 transition-all duration-500 group cursor-default"
+              className="border border-border rounded-sm p-6 sm:p-8 hover:border-primary/40 transition-all duration-500 group cursor-default"
             >
-              <cat.icon className="w-8 h-8 text-primary mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300" />
-              <h3 className="font-display text-xl font-semibold mb-4">
+              <cat.icon className="w-6 sm:w-8 h-6 sm:h-8 text-primary mb-4 sm:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300" />
+              <h3 className="font-display text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
                 {cat.title}
               </h3>
               <ul className="space-y-2">
                 {cat.items.map((item) => (
-                  <li key={item} className="text-white/60 font-body text-sm flex items-center gap-2">
-                    <motion.span
-                      className="w-1.5 h-1.5 rounded-full bg-primary/60"
-                      whileHover={{ scale: 2 }}
-                    />
+                  <li key={item} className="text-white/60 font-body text-xs sm:text-sm flex items-center gap-2">
+                    <motion.span className="w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" whileHover={{ scale: 2 }} />
                     {item}
                   </li>
                 ))}
