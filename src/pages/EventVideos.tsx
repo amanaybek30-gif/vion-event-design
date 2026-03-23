@@ -106,12 +106,23 @@ const EventVideos = () => {
               className="mb-12"
             >
               <div className="aspect-video w-full rounded-sm overflow-hidden bg-secondary border border-border/30">
-                <iframe
-                  src={getEmbedUrl(activeVideo)}
-                  className="w-full h-full"
-                  allowFullScreen
-                  allow="autoplay; encrypted-media"
-                />
+                {isDirectVideo(activeVideo) ? (
+                  <video
+                    src={activeVideo}
+                    className="w-full h-full"
+                    controls
+                    autoPlay
+                    preload="metadata"
+                  />
+                ) : (
+                  <iframe
+                    src={getEmbedUrl(activeVideo)}
+                    className="w-full h-full"
+                    allowFullScreen
+                    allow="autoplay; encrypted-media"
+                    loading="lazy"
+                  />
+                )}
               </div>
               <button
                 onClick={() => setActiveVideo(null)}
