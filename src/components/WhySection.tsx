@@ -32,23 +32,23 @@ const WhySection = () => {
   ];
 
   return (
-    <section className="py-32 px-6 section-dark" ref={ref}>
+    <section className="py-16 sm:py-32 px-4 sm:px-6 section-dark" ref={ref}>
       <div className="container mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          className="text-center mb-12 sm:mb-20"
         >
-          <p className="text-primary tracking-[0.3em] uppercase text-sm font-body mb-4">
+          <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
             {c.subtitle}
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-bold">
+          <h2 className="font-display text-2xl sm:text-4xl md:text-5xl font-bold">
             {c.title_start} <span className="text-gold-gradient">{c.title_highlight}</span>
           </h2>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
           {reasons.map((r, i) => (
             <motion.div
               key={r.title}
@@ -56,18 +56,13 @@ const WhySection = () => {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: i * 0.15 }}
               whileHover={{ y: -8 }}
-              className="text-center p-6 rounded-sm hover:bg-white/5 transition-colors duration-300 cursor-default"
+              className="text-center p-4 sm:p-6 rounded-sm hover:bg-white/5 transition-colors duration-300 cursor-default"
             >
-              <motion.div
-                whileHover={{ rotate: 10, scale: 1.15 }}
-                transition={{ duration: 0.3 }}
-              >
-                <r.icon className="w-8 h-8 text-primary mx-auto mb-4" />
+              <motion.div whileHover={{ rotate: 10, scale: 1.15 }} transition={{ duration: 0.3 }}>
+                <r.icon className="w-6 sm:w-8 h-6 sm:h-8 text-primary mx-auto mb-3 sm:mb-4" />
               </motion.div>
-              <h3 className="font-display text-lg font-semibold mb-2">{r.title}</h3>
-              <p className="text-white/60 font-body text-sm leading-relaxed">
-                {r.desc}
-              </p>
+              <h3 className="font-display text-sm sm:text-lg font-semibold mb-1 sm:mb-2">{r.title}</h3>
+              <p className="text-white/60 font-body text-xs sm:text-sm leading-relaxed">{r.desc}</p>
             </motion.div>
           ))}
         </div>

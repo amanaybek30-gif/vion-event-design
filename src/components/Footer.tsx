@@ -19,18 +19,18 @@ const Footer = () => {
   };
 
   return (
-    <footer className="border-t border-border py-12 px-6">
-      <div className="container mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="border-t border-border py-8 sm:py-12 px-4 sm:px-6">
+      <div className="container mx-auto max-w-6xl flex flex-col items-center gap-6 sm:gap-0 sm:flex-row sm:items-center sm:justify-between">
         <Link to="/">
-          <img src={vionLogo} alt="VION Events" className="h-10 w-auto" />
+          <img src={vionLogo} alt="VION Events" className="h-8 sm:h-10 w-auto" />
         </Link>
         <p
-          className="text-muted-foreground font-body text-xs tracking-wider cursor-default select-none"
+          className="text-muted-foreground font-body text-xs tracking-wider cursor-default select-none order-3 sm:order-2"
           onClick={handleCopyrightClick}
         >
           © {new Date().getFullYear()} VION Events. All rights reserved.
         </p>
-        <div className="flex gap-6">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 order-2 sm:order-3">
           {[
             { label: "About", href: "/about" },
             { label: "Services", href: "/services" },

@@ -38,7 +38,6 @@ const HomeCarousel = () => {
     setCurrent((c) => (c - 1 + images.length) % images.length);
   }, [images.length]);
 
-  // Auto-slide every 2.5 seconds
   useEffect(() => {
     if (images.length <= 1) return;
     const timer = setInterval(next, 2500);
@@ -55,7 +54,7 @@ const HomeCarousel = () => {
 
   return (
     <section className="relative w-full overflow-hidden bg-secondary">
-      <div className="relative aspect-[21/9] md:aspect-[3/1] w-full">
+      <div className="relative aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] w-full">
         <AnimatePresence custom={direction} mode="popLayout">
           <motion.img
             key={images[current].id}
@@ -71,30 +70,27 @@ const HomeCarousel = () => {
           />
         </AnimatePresence>
 
-        {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-secondary/60 via-transparent to-secondary/30 pointer-events-none" />
 
-        {/* Nav arrows */}
         {images.length > 1 && (
           <>
             <button
               onClick={prev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/50 backdrop-blur-sm flex items-center justify-center text-primary hover:bg-secondary/70 transition-colors"
+              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-secondary/50 backdrop-blur-sm flex items-center justify-center text-primary hover:bg-secondary/70 transition-colors"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 sm:w-5 h-4 sm:h-5" />
             </button>
             <button
               onClick={next}
-              className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-secondary/50 backdrop-blur-sm flex items-center justify-center text-primary hover:bg-secondary/70 transition-colors"
+              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 w-8 sm:w-10 h-8 sm:h-10 rounded-full bg-secondary/50 backdrop-blur-sm flex items-center justify-center text-primary hover:bg-secondary/70 transition-colors"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-4 sm:w-5 h-4 sm:h-5" />
             </button>
           </>
         )}
 
-        {/* Dots */}
         {images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+          <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-10 flex gap-1.5 sm:gap-2">
             {images.map((_, i) => (
               <button
                 key={i}
@@ -102,8 +98,8 @@ const HomeCarousel = () => {
                   setDirection(i > current ? 1 : -1);
                   setCurrent(i);
                 }}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  i === current ? "bg-primary w-6" : "bg-white/40 hover:bg-white/60"
+                className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+                  i === current ? "bg-primary w-4 sm:w-6" : "bg-white/40 hover:bg-white/60"
                 }`}
               />
             ))}
