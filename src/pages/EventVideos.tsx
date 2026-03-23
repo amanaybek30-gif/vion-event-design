@@ -38,11 +38,6 @@ const getYouTubeThumbnail = (url: string) => {
   return null;
 };
 
-const getYouTubeThumbnail = (url: string) => {
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
-  if (ytMatch) return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
-  return null;
-};
 
 const EventVideos = () => {
   const { id } = useParams<{ id: string }>();
