@@ -51,26 +51,26 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <section className="pt-32 pb-20 px-6" ref={ref}>
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6" ref={ref}>
         <div className="container mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
-            className="text-center mb-20"
+            className="text-center mb-12 sm:mb-20"
           >
-            <p className="text-primary tracking-[0.3em] uppercase text-sm font-body mb-4">
+            <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
               {c.subtitle}
             </p>
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold">
               {c.title_start} <span className="text-gold-gradient">{c.title_highlight}</span>
             </h1>
-            <p className="text-muted-foreground font-body text-lg mt-6 max-w-2xl mx-auto">
+            <p className="text-muted-foreground font-body text-sm sm:text-lg mt-4 sm:mt-6 max-w-2xl mx-auto">
               {c.description}
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
             {services.map((service, i) => (
               <motion.div
                 key={service.title}
@@ -78,13 +78,13 @@ const Services = () => {
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: i * 0.1 }}
                 whileHover={{ y: -8, borderColor: "hsl(var(--primary) / 0.5)" }}
-                className="border border-border rounded-sm p-8 hover:border-primary/40 transition-all duration-500 group cursor-default"
+                className="border border-border rounded-sm p-6 sm:p-8 hover:border-primary/40 transition-all duration-500 group cursor-default"
               >
                 <motion.div whileHover={{ rotate: 5, scale: 1.1 }} transition={{ duration: 0.3 }}>
-                  <service.icon className="w-8 h-8 text-primary mb-5 group-hover:scale-110 transition-transform duration-300" />
+                  <service.icon className="w-6 sm:w-8 h-6 sm:h-8 text-primary mb-4 sm:mb-5 group-hover:scale-110 transition-transform duration-300" />
                 </motion.div>
-                <h3 className="font-display text-xl font-semibold mb-3">{service.title}</h3>
-                <p className="text-muted-foreground font-body text-sm leading-relaxed">{service.description}</p>
+                <h3 className="font-display text-lg sm:text-xl font-semibold mb-2 sm:mb-3">{service.title}</h3>
+                <p className="text-muted-foreground font-body text-xs sm:text-sm leading-relaxed">{service.description}</p>
               </motion.div>
             ))}
           </div>
