@@ -24,7 +24,18 @@ const getEmbedUrl = (url: string) => {
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`;
   const driveMatch = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
   if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+  // Direct video URL (uploaded file)
   return url;
+};
+
+const isDirectVideo = (url: string) => {
+  return /\.(mp4|webm|ogg|mov)(\?|$)/i.test(url);
+};
+
+const getYouTubeThumbnail = (url: string) => {
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/);
+  if (ytMatch) return `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+  return null;
 };
 
 const getYouTubeThumbnail = (url: string) => {
