@@ -72,6 +72,7 @@ const Admin = () => {
   const carouselFileRef = useRef<HTMLInputElement>(null);
   const videoFileRef = useRef<HTMLInputElement>(null);
   const brandVideoFileRef = useRef<HTMLInputElement>(null);
+  const trailerVideoFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
