@@ -64,6 +64,8 @@ const Admin = () => {
 
   const [brandVideoUrl, setBrandVideoUrl] = useState("");
   const [brandVideoUploading, setBrandVideoUploading] = useState(false);
+  const [trailerVideoUrl, setTrailerVideoUrl] = useState("");
+  const [trailerVideoUploading, setTrailerVideoUploading] = useState(false);
 
   const portfolioFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
