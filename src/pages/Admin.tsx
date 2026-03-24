@@ -87,8 +87,34 @@ const Admin = () => {
       fetchPortfolio();
       fetchGallery();
       fetchCarousel();
+      fetchBrandVideo();
     }
   }, [authed]);
+
+  const fetchBrandVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("content").eq("page", "home").eq("section_key", "brand_video_url").single();
+    if (data) setBrandVideoUrl(data.content);
+  };
+
+  const saveBrandVideo = async (url: string) => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "brand_video_url").single();
+    if (data) {
+      await supabase.from("page_contents").update({ content: url, updated_at: new Date().toISOString() }).eq("id", data.id);
+    } else {
+      await supabase.from("page_contents").insert({ page: "home", section_key: "brand_video_url", content: url });
+    }
+    setBrandVideoUrl(url);
+  };
+
+  const handleBrandVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBrandVideoUploading(true);
+    const url = await uploadFile(file, "brand", "videos");
+    if (url) await saveBrandVideo(url);
+    setBrandVideoUploading(false);
+    if (brandVideoFileRef.current) brandVideoFileRef.current.value = "";
+  };
 
   const fetchPortfolio = async () => {
     const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
