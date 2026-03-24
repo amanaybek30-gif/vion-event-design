@@ -91,6 +91,7 @@ const Admin = () => {
       fetchGallery();
       fetchCarousel();
       fetchBrandVideo();
+      fetchTrailerVideo();
     }
   }, [authed]);
 
