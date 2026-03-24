@@ -62,10 +62,14 @@ const Admin = () => {
   const [newCarouselAlt, setNewCarouselAlt] = useState("");
   const [carouselUploading, setCarouselUploading] = useState(false);
 
+  const [brandVideoUrl, setBrandVideoUrl] = useState("");
+  const [brandVideoUploading, setBrandVideoUploading] = useState(false);
+
   const portfolioFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const carouselFileRef = useRef<HTMLInputElement>(null);
   const videoFileRef = useRef<HTMLInputElement>(null);
+  const brandVideoFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
