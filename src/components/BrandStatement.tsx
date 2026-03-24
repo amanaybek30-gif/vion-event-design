@@ -1,5 +1,5 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { usePageContent } from "@/hooks/usePageContent";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -10,6 +10,7 @@ const defaults = {
 
 const BrandStatement = () => {
   const ref = useRef(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const { content: c } = usePageContent("brand_section", defaults);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
@@ -17,16 +18,23 @@ const BrandStatement = () => {
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchVideo = async () => {
       const { data } = await supabase
         .from("page_contents")
         .select("content")
         .eq("page", "home")
         .eq("section_key", "brand_video_url")
-        .single();
+        .maybeSingle();
       if (data?.content) setVideoUrl(data.content);
     };
-    fetch();
+    fetchVideo();
+  }, []);
+
+  const handleVideoRef = useCallback((el: HTMLVideoElement | null) => {
+    (videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = el;
+    if (el) {
+      el.play().catch(() => {});
+    }
   }, []);
 
   return (
@@ -35,6 +43,7 @@ const BrandStatement = () => {
       <div className="absolute inset-0 z-0">
         {videoUrl ? (
           <video
+            ref={handleVideoRef}
             src={videoUrl}
             className="w-full h-full object-cover"
             autoPlay
@@ -42,11 +51,12 @@ const BrandStatement = () => {
             muted
             playsInline
             preload="auto"
+            onCanPlay={() => videoRef.current?.play().catch(() => {})}
           />
         ) : (
           <div className="w-full h-full bg-secondary" />
         )}
-        <div className="absolute inset-0 bg-secondary/75" />
+        <div className="absolute inset-0 bg-secondary/50" />
       </div>
 
       <motion.div
