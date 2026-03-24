@@ -1,13 +1,12 @@
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { usePageContent } from "@/hooks/usePageContent";
+import { supabase } from "@/integrations/supabase/client";
 
 const defaults = {
   line1: "We don't just organize events.",
   line2: "We design moments people remember.",
 };
-
-const DRIVE_VIDEO_URL = "https://drive.google.com/uc?export=download&id=1bTDqeWvrQmENKYJgttDw-5Q3yaRD7LY_";
 
 const BrandStatement = () => {
   const ref = useRef(null);
@@ -15,20 +14,38 @@ const BrandStatement = () => {
   const { content: c } = usePageContent("brand_section", defaults);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const scale = useTransform(scrollYProgress, [0, 0.5], [0.9, 1]);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { data } = await supabase
+        .from("page_contents")
+        .select("content")
+        .eq("page", "home")
+        .eq("section_key", "brand_video_url")
+        .single();
+      if (data?.content) setVideoUrl(data.content);
+    };
+    fetch();
+  }, []);
 
   return (
     <section className="py-16 sm:py-32 px-4 sm:px-6 relative overflow-hidden" ref={ref}>
-      {/* Video background - auto-plays, loops, muted */}
+      {/* Video background */}
       <div className="absolute inset-0 z-0">
-        <video
-          src={DRIVE_VIDEO_URL}
-          className="w-full h-full object-cover"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-        />
+        {videoUrl ? (
+          <video
+            src={videoUrl}
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+          />
+        ) : (
+          <div className="w-full h-full bg-secondary" />
+        )}
         <div className="absolute inset-0 bg-secondary/75" />
       </div>
 

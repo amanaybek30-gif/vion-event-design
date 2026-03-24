@@ -54,7 +54,7 @@ const HomeCarousel = () => {
 
   return (
     <section className="relative w-full overflow-hidden bg-secondary">
-      <div className="relative aspect-[16/9] sm:aspect-[21/9] md:aspect-[3/1] w-full">
+      <div className="relative aspect-[16/9] md:aspect-[21/9] lg:aspect-[2.5/1] w-full">
         <AnimatePresence custom={direction} mode="popLayout">
           <motion.img
             key={images[current].id}

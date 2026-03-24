@@ -37,7 +37,7 @@ interface CarouselImage {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const getPublicUrl = (path: string, bucket = "images") => `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 
-type Tab = "portfolio" | "gallery" | "carousel" | "about" | "services" | "contact" | "vers";
+type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "about" | "services" | "contact" | "vers";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -62,10 +62,14 @@ const Admin = () => {
   const [newCarouselAlt, setNewCarouselAlt] = useState("");
   const [carouselUploading, setCarouselUploading] = useState(false);
 
+  const [brandVideoUrl, setBrandVideoUrl] = useState("");
+  const [brandVideoUploading, setBrandVideoUploading] = useState(false);
+
   const portfolioFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const carouselFileRef = useRef<HTMLInputElement>(null);
   const videoFileRef = useRef<HTMLInputElement>(null);
+  const brandVideoFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -83,8 +87,34 @@ const Admin = () => {
       fetchPortfolio();
       fetchGallery();
       fetchCarousel();
+      fetchBrandVideo();
     }
   }, [authed]);
+
+  const fetchBrandVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("content").eq("page", "home").eq("section_key", "brand_video_url").single();
+    if (data) setBrandVideoUrl(data.content);
+  };
+
+  const saveBrandVideo = async (url: string) => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "brand_video_url").single();
+    if (data) {
+      await supabase.from("page_contents").update({ content: url, updated_at: new Date().toISOString() }).eq("id", data.id);
+    } else {
+      await supabase.from("page_contents").insert({ page: "home", section_key: "brand_video_url", content: url });
+    }
+    setBrandVideoUrl(url);
+  };
+
+  const handleBrandVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBrandVideoUploading(true);
+    const url = await uploadFile(file, "brand", "videos");
+    if (url) await saveBrandVideo(url);
+    setBrandVideoUploading(false);
+    if (brandVideoFileRef.current) brandVideoFileRef.current.value = "";
+  };
 
   const fetchPortfolio = async () => {
     const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
@@ -254,6 +284,7 @@ const Admin = () => {
     { key: "portfolio", label: "Portfolio" },
     { key: "gallery", label: "Gallery" },
     { key: "carousel", label: "Carousel" },
+    { key: "brand_video", label: "Brand Video" },
     { key: "about", label: "About" },
     { key: "services", label: "Services" },
     { key: "contact", label: "Contact" },
@@ -423,6 +454,30 @@ const Admin = () => {
               ))}
             </div>
             {carousel.length === 0 && <p className="text-muted-foreground text-sm text-center py-8">No carousel images yet. Add some to show on the homepage.</p>}
+          </div>
+        )}
+
+        {tab === "brand_video" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-2">Brand Statement Background Video</h2>
+            <p className="text-muted-foreground text-sm font-body mb-6">Upload a video that plays behind the "We don't just organize events" section. Direct uploads load faster than Google Drive links.</p>
+            <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+              {brandVideoUrl && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-body">Current video:</p>
+                  <video src={brandVideoUrl} className="w-full max-w-md h-40 object-cover rounded-sm border border-border" muted playsInline />
+                </div>
+              )}
+              <input type="file" accept="video/*" ref={brandVideoFileRef} onChange={handleBrandVideoUpload} className="hidden" />
+              <Button onClick={() => brandVideoFileRef.current?.click()} disabled={brandVideoUploading} className="bg-gold-gradient text-primary-foreground">
+                <Upload className="w-4 h-4 mr-2" /> {brandVideoUploading ? "Uploading video..." : "Upload Video from Device"}
+              </Button>
+              {brandVideoUrl && (
+                <Button variant="outline" size="sm" onClick={() => saveBrandVideo("")}>
+                  <Trash2 className="w-4 h-4 mr-2" /> Remove Video
+                </Button>
+              )}
+            </div>
           </div>
         )}
 
