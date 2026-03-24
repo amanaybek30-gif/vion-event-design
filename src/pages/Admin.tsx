@@ -457,6 +457,30 @@ const Admin = () => {
           </div>
         )}
 
+        {tab === "brand_video" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-2">Brand Statement Background Video</h2>
+            <p className="text-muted-foreground text-sm font-body mb-6">Upload a video that plays behind the "We don't just organize events" section. Direct uploads load faster than Google Drive links.</p>
+            <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+              {brandVideoUrl && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-body">Current video:</p>
+                  <video src={brandVideoUrl} className="w-full max-w-md h-40 object-cover rounded-sm border border-border" muted playsInline />
+                </div>
+              )}
+              <input type="file" accept="video/*" ref={brandVideoFileRef} onChange={handleBrandVideoUpload} className="hidden" />
+              <Button onClick={() => brandVideoFileRef.current?.click()} disabled={brandVideoUploading} className="bg-gold-gradient text-primary-foreground">
+                <Upload className="w-4 h-4 mr-2" /> {brandVideoUploading ? "Uploading video..." : "Upload Video from Device"}
+              </Button>
+              {brandVideoUrl && (
+                <Button variant="outline" size="sm" onClick={() => saveBrandVideo("")}>
+                  <Trash2 className="w-4 h-4 mr-2" /> Remove Video
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
         {tab === "about" && (
           <div>
             <h2 className="font-display text-xl font-semibold mb-6">About Page Content</h2>
