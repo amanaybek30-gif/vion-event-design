@@ -37,7 +37,7 @@ interface CarouselImage {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const getPublicUrl = (path: string, bucket = "images") => `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 
-type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "about" | "services" | "contact" | "vers";
+type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "trailer_video" | "about" | "services" | "contact" | "vers";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -64,12 +64,15 @@ const Admin = () => {
 
   const [brandVideoUrl, setBrandVideoUrl] = useState("");
   const [brandVideoUploading, setBrandVideoUploading] = useState(false);
+  const [trailerVideoUrl, setTrailerVideoUrl] = useState("");
+  const [trailerVideoUploading, setTrailerVideoUploading] = useState(false);
 
   const portfolioFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const carouselFileRef = useRef<HTMLInputElement>(null);
   const videoFileRef = useRef<HTMLInputElement>(null);
   const brandVideoFileRef = useRef<HTMLInputElement>(null);
+  const trailerVideoFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -88,6 +91,7 @@ const Admin = () => {
       fetchGallery();
       fetchCarousel();
       fetchBrandVideo();
+      fetchTrailerVideo();
     }
   }, [authed]);
 
@@ -114,6 +118,32 @@ const Admin = () => {
     if (url) await saveBrandVideo(url);
     setBrandVideoUploading(false);
     if (brandVideoFileRef.current) brandVideoFileRef.current.value = "";
+  };
+
+  const fetchTrailerVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("content").eq("page", "home").eq("section_key", "trailer_video_url").maybeSingle();
+    if (data) setTrailerVideoUrl(data.content);
+  };
+
+  const saveTrailerVideo = async (url: string) => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "trailer_video_url").maybeSingle();
+    if (data) {
+      await supabase.from("page_contents").update({ content: url, updated_at: new Date().toISOString() }).eq("id", data.id);
+    } else {
+      await supabase.from("page_contents").insert({ page: "home", section_key: "trailer_video_url", content: url });
+    }
+    setTrailerVideoUrl(url);
+  };
+
+  const handleTrailerVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setTrailerVideoUploading(true);
+    const url = await uploadFile(file, "trailer", "videos");
+    if (url) await saveTrailerVideo(url);
+    setTrailerVideoUploading(false);
+    if (trailerVideoFileRef.current) trailerVideoFileRef.current.value = "";
+  };
   };
 
   const fetchPortfolio = async () => {
@@ -285,6 +315,7 @@ const Admin = () => {
     { key: "gallery", label: "Gallery" },
     { key: "carousel", label: "Carousel" },
     { key: "brand_video", label: "Brand Video" },
+    { key: "trailer_video", label: "Trailer Video" },
     { key: "about", label: "About" },
     { key: "services", label: "Services" },
     { key: "contact", label: "Contact" },
@@ -475,6 +506,30 @@ const Admin = () => {
               {brandVideoUrl && (
                 <Button variant="outline" size="sm" onClick={() => saveBrandVideo("")}>
                   <Trash2 className="w-4 h-4 mr-2" /> Remove Video
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {tab === "trailer_video" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-2">Trailer Video</h2>
+            <p className="text-muted-foreground text-sm font-body mb-6">Upload the documentary trailer video. It will autoplay muted on the homepage and visitors can unmute & watch fullscreen.</p>
+            <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+              {trailerVideoUrl && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-body">Current trailer:</p>
+                  <video src={trailerVideoUrl} className="w-full max-w-md h-40 object-cover rounded-sm border border-border" controls muted playsInline />
+                </div>
+              )}
+              <input type="file" accept="video/*" ref={trailerVideoFileRef} onChange={handleTrailerVideoUpload} className="hidden" />
+              <Button onClick={() => trailerVideoFileRef.current?.click()} disabled={trailerVideoUploading} className="bg-gold-gradient text-primary-foreground">
+                <Upload className="w-4 h-4 mr-2" /> {trailerVideoUploading ? "Uploading trailer..." : "Upload Trailer from Device"}
+              </Button>
+              {trailerVideoUrl && (
+                <Button variant="outline" size="sm" onClick={() => saveTrailerVideo("")}>
+                  <Trash2 className="w-4 h-4 mr-2" /> Remove Trailer
                 </Button>
               )}
             </div>
