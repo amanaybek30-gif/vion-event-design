@@ -33,7 +33,17 @@ const BrandStatement = () => {
   const handleVideoRef = useCallback((el: HTMLVideoElement | null) => {
     (videoRef as React.MutableRefObject<HTMLVideoElement | null>).current = el;
     if (el) {
-      el.play().catch(() => {});
+      el.muted = true;
+      el.playsInline = true;
+      el.loop = true;
+      el.autoplay = true;
+      el.setAttribute("playsinline", "");
+      el.setAttribute("webkit-playsinline", "");
+      el.load();
+      const tryPlay = () => {
+        el.play().catch(() => setTimeout(tryPlay, 500));
+      };
+      tryPlay();
     }
   }, []);
 
@@ -51,12 +61,11 @@ const BrandStatement = () => {
             muted
             playsInline
             preload="auto"
-            onCanPlay={() => videoRef.current?.play().catch(() => {})}
           />
         ) : (
           <div className="w-full h-full bg-secondary" />
         )}
-        <div className="absolute inset-0 bg-secondary/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
       </div>
 
       <motion.div
