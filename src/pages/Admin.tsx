@@ -120,6 +120,32 @@ const Admin = () => {
     if (brandVideoFileRef.current) brandVideoFileRef.current.value = "";
   };
 
+  const fetchTrailerVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("content").eq("page", "home").eq("section_key", "trailer_video_url").maybeSingle();
+    if (data) setTrailerVideoUrl(data.content);
+  };
+
+  const saveTrailerVideo = async (url: string) => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "trailer_video_url").maybeSingle();
+    if (data) {
+      await supabase.from("page_contents").update({ content: url, updated_at: new Date().toISOString() }).eq("id", data.id);
+    } else {
+      await supabase.from("page_contents").insert({ page: "home", section_key: "trailer_video_url", content: url });
+    }
+    setTrailerVideoUrl(url);
+  };
+
+  const handleTrailerVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setTrailerVideoUploading(true);
+    const url = await uploadFile(file, "trailer", "videos");
+    if (url) await saveTrailerVideo(url);
+    setTrailerVideoUploading(false);
+    if (trailerVideoFileRef.current) trailerVideoFileRef.current.value = "";
+  };
+  };
+
   const fetchPortfolio = async () => {
     const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
     if (data) setPortfolio(data.map((d: any) => ({
