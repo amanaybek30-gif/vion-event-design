@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Trash2, Plus, LogOut, Upload, Video, GripVertical } from "lucide-react";
+import { Trash2, Plus, LogOut, Upload, Video, GripVertical, MessageSquareQuote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -34,10 +34,20 @@ interface CarouselImage {
   sort_order: number;
 }
 
+interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  avatar_url: string;
+  sort_order: number;
+}
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const getPublicUrl = (path: string, bucket = "images") => `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 
-type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "about" | "services" | "contact" | "vers";
+type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "testimonials" | "about" | "services" | "contact" | "vers";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -65,6 +75,11 @@ const Admin = () => {
   const [brandVideoUrl, setBrandVideoUrl] = useState("");
   const [brandVideoUploading, setBrandVideoUploading] = useState(false);
 
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [editTestimonial, setEditTestimonial] = useState<Testimonial | null>(null);
+  const [testimonialAvatarUploading, setTestimonialAvatarUploading] = useState(false);
+  const testimonialAvatarRef = useRef<HTMLInputElement>(null);
+
   const portfolioFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const carouselFileRef = useRef<HTMLInputElement>(null);
@@ -88,6 +103,7 @@ const Admin = () => {
       fetchGallery();
       fetchCarousel();
       fetchBrandVideo();
+      fetchTestimonials();
     }
   }, [authed]);
 
@@ -132,6 +148,45 @@ const Admin = () => {
   const fetchCarousel = async () => {
     const { data } = await supabase.from("carousel_images").select("*").order("sort_order");
     if (data) setCarousel(data);
+  };
+
+  const fetchTestimonials = async () => {
+    const { data } = await supabase.from("testimonials").select("*").order("sort_order");
+    if (data) setTestimonials(data);
+  };
+
+  const handleTestimonialAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editTestimonial) return;
+    setTestimonialAvatarUploading(true);
+    const url = await uploadFile(file, "testimonials");
+    if (url) setEditTestimonial({ ...editTestimonial, avatar_url: url });
+    setTestimonialAvatarUploading(false);
+    if (testimonialAvatarRef.current) testimonialAvatarRef.current.value = "";
+  };
+
+  const saveTestimonial = async () => {
+    if (!editTestimonial) return;
+    const payload = {
+      name: editTestimonial.name,
+      role: editTestimonial.role,
+      company: editTestimonial.company,
+      content: editTestimonial.content,
+      avatar_url: editTestimonial.avatar_url,
+      sort_order: editTestimonial.sort_order,
+    };
+    if (editTestimonial.id) {
+      await supabase.from("testimonials").update(payload).eq("id", editTestimonial.id);
+    } else {
+      await supabase.from("testimonials").insert(payload);
+    }
+    setEditTestimonial(null);
+    fetchTestimonials();
+  };
+
+  const deleteTestimonial = async (id: string) => {
+    await supabase.from("testimonials").delete().eq("id", id);
+    fetchTestimonials();
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -285,7 +340,7 @@ const Admin = () => {
     { key: "gallery", label: "Gallery" },
     { key: "carousel", label: "Carousel" },
     { key: "brand_video", label: "Brand Video" },
-    { key: "about", label: "About" },
+    { key: "testimonials", label: "Testimonials" },
     { key: "services", label: "Services" },
     { key: "contact", label: "Contact" },
     { key: "vers", label: "VERS" },
@@ -477,6 +532,64 @@ const Admin = () => {
                   <Trash2 className="w-4 h-4 mr-2" /> Remove Video
                 </Button>
               )}
+            </div>
+          </div>
+        )}
+
+        {tab === "testimonials" && (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-display text-xl font-semibold">Testimonials</h2>
+              <Button onClick={() => setEditTestimonial({ id: "", name: "", role: "", company: "", content: "", avatar_url: "", sort_order: testimonials.length })} className="bg-gold-gradient text-primary-foreground">
+                <Plus className="w-4 h-4 mr-2" /> Add Testimonial
+              </Button>
+            </div>
+
+            {editTestimonial && (
+              <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+                <Input placeholder="Person's name" value={editTestimonial.name} onChange={(e) => setEditTestimonial({ ...editTestimonial, name: e.target.value })} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input placeholder="Role / Title" value={editTestimonial.role} onChange={(e) => setEditTestimonial({ ...editTestimonial, role: e.target.value })} />
+                  <Input placeholder="Company / Organization" value={editTestimonial.company} onChange={(e) => setEditTestimonial({ ...editTestimonial, company: e.target.value })} />
+                </div>
+                <Textarea placeholder="Testimonial content" value={editTestimonial.content} onChange={(e) => setEditTestimonial({ ...editTestimonial, content: e.target.value })} rows={4} />
+                <div className="space-y-2">
+                  <label className="text-sm text-muted-foreground font-body">Avatar Photo (optional)</label>
+                  {editTestimonial.avatar_url && <img src={editTestimonial.avatar_url} alt="Avatar" className="w-16 h-16 object-cover rounded-full border border-border" />}
+                  <input type="file" accept="image/*" ref={testimonialAvatarRef} onChange={handleTestimonialAvatarUpload} className="hidden" />
+                  <Button type="button" variant="outline" size="sm" disabled={testimonialAvatarUploading} onClick={() => testimonialAvatarRef.current?.click()}>
+                    <Upload className="w-4 h-4 mr-2" /> {testimonialAvatarUploading ? "Uploading..." : "Upload Avatar"}
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={saveTestimonial} className="bg-gold-gradient text-primary-foreground">Save</Button>
+                  <Button variant="outline" onClick={() => setEditTestimonial(null)}>Cancel</Button>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {testimonials.map((t) => (
+                <div key={t.id} className="flex items-center gap-4 border border-border rounded-sm p-4">
+                  {t.avatar_url ? (
+                    <img src={t.avatar_url} alt={t.name} className="w-12 h-12 object-cover rounded-full" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-display text-sm">
+                      {t.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <p className="font-semibold">{t.name}</p>
+                    <p className="text-muted-foreground text-xs">{t.role}{t.company ? ` · ${t.company}` : ""}</p>
+                    <p className="text-sm mt-1 line-clamp-1">{t.content}</p>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setEditTestimonial({ ...t })}>Edit</Button>
+                  <Button variant="ghost" size="icon" onClick={() => deleteTestimonial(t.id)}>
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
+              ))}
+              {testimonials.length === 0 && <p className="text-muted-foreground text-sm text-center py-8">No testimonials yet. Add some to show on the homepage.</p>}
             </div>
           </div>
         )}
