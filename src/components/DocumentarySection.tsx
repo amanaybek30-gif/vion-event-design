@@ -1,11 +1,26 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { Film, Droplets, Users, Play } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const DocumentarySection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [isPlaying, setIsPlaying] = useState(false);
+  const [trailerUrl, setTrailerUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTrailer = async () => {
+      const { data } = await supabase
+        .from("page_contents")
+        .select("content")
+        .eq("page", "home")
+        .eq("section_key", "trailer_video_url")
+        .maybeSingle();
+      if (data?.content) setTrailerUrl(data.content);
+    };
+    fetchTrailer();
+  }, []);
 
   return (
     <section className="py-16 sm:py-32 px-4 sm:px-6 section-dark" ref={ref}>
