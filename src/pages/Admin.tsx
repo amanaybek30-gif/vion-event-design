@@ -75,6 +75,11 @@ const Admin = () => {
   const [brandVideoUrl, setBrandVideoUrl] = useState("");
   const [brandVideoUploading, setBrandVideoUploading] = useState(false);
 
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [editTestimonial, setEditTestimonial] = useState<Testimonial | null>(null);
+  const [testimonialAvatarUploading, setTestimonialAvatarUploading] = useState(false);
+  const testimonialAvatarRef = useRef<HTMLInputElement>(null);
+
   const portfolioFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const carouselFileRef = useRef<HTMLInputElement>(null);
