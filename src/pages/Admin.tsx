@@ -536,6 +536,64 @@ const Admin = () => {
           </div>
         )}
 
+        {tab === "testimonials" && (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-display text-xl font-semibold">Testimonials</h2>
+              <Button onClick={() => setEditTestimonial({ id: "", name: "", role: "", company: "", content: "", avatar_url: "", sort_order: testimonials.length })} className="bg-gold-gradient text-primary-foreground">
+                <Plus className="w-4 h-4 mr-2" /> Add Testimonial
+              </Button>
+            </div>
+
+            {editTestimonial && (
+              <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+                <Input placeholder="Person's name" value={editTestimonial.name} onChange={(e) => setEditTestimonial({ ...editTestimonial, name: e.target.value })} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input placeholder="Role / Title" value={editTestimonial.role} onChange={(e) => setEditTestimonial({ ...editTestimonial, role: e.target.value })} />
+                  <Input placeholder="Company / Organization" value={editTestimonial.company} onChange={(e) => setEditTestimonial({ ...editTestimonial, company: e.target.value })} />
+                </div>
+                <Textarea placeholder="Testimonial content" value={editTestimonial.content} onChange={(e) => setEditTestimonial({ ...editTestimonial, content: e.target.value })} rows={4} />
+                <div className="space-y-2">
+                  <label className="text-sm text-muted-foreground font-body">Avatar Photo (optional)</label>
+                  {editTestimonial.avatar_url && <img src={editTestimonial.avatar_url} alt="Avatar" className="w-16 h-16 object-cover rounded-full border border-border" />}
+                  <input type="file" accept="image/*" ref={testimonialAvatarRef} onChange={handleTestimonialAvatarUpload} className="hidden" />
+                  <Button type="button" variant="outline" size="sm" disabled={testimonialAvatarUploading} onClick={() => testimonialAvatarRef.current?.click()}>
+                    <Upload className="w-4 h-4 mr-2" /> {testimonialAvatarUploading ? "Uploading..." : "Upload Avatar"}
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button onClick={saveTestimonial} className="bg-gold-gradient text-primary-foreground">Save</Button>
+                  <Button variant="outline" onClick={() => setEditTestimonial(null)}>Cancel</Button>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {testimonials.map((t) => (
+                <div key={t.id} className="flex items-center gap-4 border border-border rounded-sm p-4">
+                  {t.avatar_url ? (
+                    <img src={t.avatar_url} alt={t.name} className="w-12 h-12 object-cover rounded-full" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-display text-sm">
+                      {t.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <p className="font-semibold">{t.name}</p>
+                    <p className="text-muted-foreground text-xs">{t.role}{t.company ? ` · ${t.company}` : ""}</p>
+                    <p className="text-sm mt-1 line-clamp-1">{t.content}</p>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setEditTestimonial({ ...t })}>Edit</Button>
+                  <Button variant="ghost" size="icon" onClick={() => deleteTestimonial(t.id)}>
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
+              ))}
+              {testimonials.length === 0 && <p className="text-muted-foreground text-sm text-center py-8">No testimonials yet. Add some to show on the homepage.</p>}
+            </div>
+          </div>
+        )}
+
         {tab === "about" && (
           <div>
             <h2 className="font-display text-xl font-semibold mb-6">About Page Content</h2>
