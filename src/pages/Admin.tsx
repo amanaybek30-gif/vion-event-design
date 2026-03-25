@@ -34,10 +34,20 @@ interface CarouselImage {
   sort_order: number;
 }
 
+interface Testimonial {
+  id: string;
+  name: string;
+  role: string;
+  company: string;
+  content: string;
+  avatar_url: string;
+  sort_order: number;
+}
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const getPublicUrl = (path: string, bucket = "images") => `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 
-type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "about" | "services" | "contact" | "vers";
+type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "testimonials" | "about" | "services" | "contact" | "vers";
 
 const Admin = () => {
   const navigate = useNavigate();
