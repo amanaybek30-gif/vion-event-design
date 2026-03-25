@@ -567,7 +567,30 @@ const Admin = () => {
           </div>
         )}
 
-        {tab === "testimonials" && (
+        {tab === "trailer_video" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-2">Documentary Trailer Video</h2>
+            <p className="text-muted-foreground text-sm font-body mb-6">Upload the trailer video shown in the "Flow Fest Documentary" section on the homepage. Direct uploads play faster than external links.</p>
+            <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+              {trailerVideoUrl && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-body">Current trailer:</p>
+                  <video src={trailerVideoUrl} className="w-full max-w-md h-40 object-cover rounded-sm border border-border" controls muted playsInline />
+                </div>
+              )}
+              <input type="file" accept="video/*" ref={trailerVideoFileRef} onChange={handleTrailerVideoUpload} className="hidden" />
+              <Button onClick={() => trailerVideoFileRef.current?.click()} disabled={trailerVideoUploading} className="bg-gold-gradient text-primary-foreground">
+                <Upload className="w-4 h-4 mr-2" /> {trailerVideoUploading ? "Uploading video..." : "Upload Trailer from Device"}
+              </Button>
+              {trailerVideoUrl && (
+                <Button variant="outline" size="sm" onClick={() => saveTrailerVideo("")}>
+                  <Trash2 className="w-4 h-4 mr-2" /> Remove Trailer
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-display text-xl font-semibold">Testimonials</h2>
