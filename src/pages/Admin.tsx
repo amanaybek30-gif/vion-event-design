@@ -339,7 +339,7 @@ const Admin = () => {
     { key: "gallery", label: "Gallery" },
     { key: "carousel", label: "Carousel" },
     { key: "brand_video", label: "Brand Video" },
-    { key: "about", label: "About" },
+    { key: "testimonials", label: "Testimonials" },
     { key: "services", label: "Services" },
     { key: "contact", label: "Contact" },
     { key: "vers", label: "VERS" },
