@@ -128,6 +128,39 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          avatar_url: string
+          company: string
+          content: string
+          created_at: string
+          id: string
+          name: string
+          role: string
+          sort_order: number
+        }
+        Insert: {
+          avatar_url?: string
+          company?: string
+          content?: string
+          created_at?: string
+          id?: string
+          name?: string
+          role?: string
+          sort_order?: number
+        }
+        Update: {
+          avatar_url?: string
+          company?: string
+          content?: string
+          created_at?: string
+          id?: string
+          name?: string
+          role?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
