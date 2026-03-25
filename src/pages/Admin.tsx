@@ -47,7 +47,7 @@ interface Testimonial {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const getPublicUrl = (path: string, bucket = "images") => `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 
-type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "testimonials" | "about" | "services" | "contact" | "vers";
+type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "trailer_video" | "testimonials" | "about" | "services" | "contact" | "vers";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -74,6 +74,8 @@ const Admin = () => {
 
   const [brandVideoUrl, setBrandVideoUrl] = useState("");
   const [brandVideoUploading, setBrandVideoUploading] = useState(false);
+  const [trailerVideoUrl, setTrailerVideoUrl] = useState("");
+  const [trailerVideoUploading, setTrailerVideoUploading] = useState(false);
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [editTestimonial, setEditTestimonial] = useState<Testimonial | null>(null);
@@ -85,6 +87,7 @@ const Admin = () => {
   const carouselFileRef = useRef<HTMLInputElement>(null);
   const videoFileRef = useRef<HTMLInputElement>(null);
   const brandVideoFileRef = useRef<HTMLInputElement>(null);
+  const trailerVideoFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -103,6 +106,7 @@ const Admin = () => {
       fetchGallery();
       fetchCarousel();
       fetchBrandVideo();
+      fetchTrailerVideo();
       fetchTestimonials();
     }
   }, [authed]);
@@ -130,6 +134,32 @@ const Admin = () => {
     if (url) await saveBrandVideo(url);
     setBrandVideoUploading(false);
     if (brandVideoFileRef.current) brandVideoFileRef.current.value = "";
+  };
+
+  const fetchTrailerVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("content").eq("page", "home").eq("section_key", "trailer_video_url").maybeSingle();
+    if (data) setTrailerVideoUrl(data.content);
+  };
+
+  const saveTrailerVideo = async (url: string) => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "trailer_video_url").maybeSingle();
+    if (data) {
+      await supabase.from("page_contents").update({ content: url, updated_at: new Date().toISOString() }).eq("id", data.id);
+    } else {
+      await supabase.from("page_contents").insert({ page: "home", section_key: "trailer_video_url", content: url });
+    }
+    setTrailerVideoUrl(url);
+  };
+
+  const handleTrailerVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setTrailerVideoUploading(true);
+    const url = await uploadFile(file, "trailer", "videos");
+    if (url) await saveTrailerVideo(url);
+    setTrailerVideoUploading(false);
+    if (trailerVideoFileRef.current) trailerVideoFileRef.current.value = "";
+  };
   };
 
   const fetchPortfolio = async () => {
@@ -340,6 +370,7 @@ const Admin = () => {
     { key: "gallery", label: "Gallery" },
     { key: "carousel", label: "Carousel" },
     { key: "brand_video", label: "Brand Video" },
+    { key: "trailer_video", label: "Trailer Video" },
     { key: "testimonials", label: "Testimonials" },
     { key: "services", label: "Services" },
     { key: "contact", label: "Contact" },
