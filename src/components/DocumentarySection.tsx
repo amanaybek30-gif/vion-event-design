@@ -1,11 +1,26 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { Film, Droplets, Users, Play } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const DocumentarySection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
   const [isPlaying, setIsPlaying] = useState(false);
+  const [trailerUrl, setTrailerUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTrailer = async () => {
+      const { data } = await supabase
+        .from("page_contents")
+        .select("content")
+        .eq("page", "home")
+        .eq("section_key", "trailer_video_url")
+        .maybeSingle();
+      if (data?.content) setTrailerUrl(data.content);
+    };
+    fetchTrailer();
+  }, []);
 
   return (
     <section className="py-16 sm:py-32 px-4 sm:px-6 section-dark" ref={ref}>
@@ -45,6 +60,14 @@ const DocumentarySection = () => {
               </motion.div>
               <p className="absolute bottom-4 sm:bottom-6 font-body text-xs sm:text-sm text-white/60">Click to play trailer</p>
             </div>
+          ) : trailerUrl ? (
+            <video
+              src={trailerUrl}
+              className="w-full h-full object-cover"
+              controls
+              autoPlay
+              playsInline
+            />
           ) : (
             <iframe
               src="https://drive.google.com/file/d/1DdOKF7NZrYu6IRP79TsmOIHc40xia-B1/preview"

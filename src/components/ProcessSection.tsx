@@ -32,8 +32,15 @@ const ProcessSection = () => {
   ];
 
   return (
-    <section id="process" className="py-16 sm:py-32 px-4 sm:px-6" ref={ref}>
-      <div className="container mx-auto max-w-5xl">
+    <section id="process" className="py-16 sm:py-32 px-4 sm:px-6 relative overflow-hidden" ref={ref}>
+      {/* Decorative background */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-secondary to-primary/10" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-primary/8 rounded-full blur-3xl" />
+        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.06) 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+      </div>
+      <div className="container mx-auto max-w-5xl relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
