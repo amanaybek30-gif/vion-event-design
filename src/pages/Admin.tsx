@@ -189,6 +189,7 @@ const Admin = () => {
     fetchTestimonials();
   };
 
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setError("Invalid credentials");
