@@ -150,7 +150,45 @@ const Admin = () => {
     if (data) setCarousel(data);
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const fetchTestimonials = async () => {
+    const { data } = await supabase.from("testimonials").select("*").order("sort_order");
+    if (data) setTestimonials(data);
+  };
+
+  const handleTestimonialAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editTestimonial) return;
+    setTestimonialAvatarUploading(true);
+    const url = await uploadFile(file, "testimonials");
+    if (url) setEditTestimonial({ ...editTestimonial, avatar_url: url });
+    setTestimonialAvatarUploading(false);
+    if (testimonialAvatarRef.current) testimonialAvatarRef.current.value = "";
+  };
+
+  const saveTestimonial = async () => {
+    if (!editTestimonial) return;
+    const payload = {
+      name: editTestimonial.name,
+      role: editTestimonial.role,
+      company: editTestimonial.company,
+      content: editTestimonial.content,
+      avatar_url: editTestimonial.avatar_url,
+      sort_order: editTestimonial.sort_order,
+    };
+    if (editTestimonial.id) {
+      await supabase.from("testimonials").update(payload).eq("id", editTestimonial.id);
+    } else {
+      await supabase.from("testimonials").insert(payload);
+    }
+    setEditTestimonial(null);
+    fetchTestimonials();
+  };
+
+  const deleteTestimonial = async (id: string) => {
+    await supabase.from("testimonials").delete().eq("id", id);
+    fetchTestimonials();
+  };
+
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setError("Invalid credentials");
