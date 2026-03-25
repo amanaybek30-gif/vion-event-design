@@ -103,6 +103,7 @@ const Admin = () => {
       fetchGallery();
       fetchCarousel();
       fetchBrandVideo();
+      fetchTestimonials();
     }
   }, [authed]);
 
