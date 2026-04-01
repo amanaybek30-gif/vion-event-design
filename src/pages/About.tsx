@@ -13,6 +13,12 @@ const About = () => {
     transition: { duration: 0.8, delay },
   });
 
+  const fadeIn = (delay = 0) => ({
+    initial: { opacity: 0 },
+    animate: inView ? { opacity: 1 } : {},
+    transition: { duration: 1, delay },
+  });
+
   const services = [
     "Business and networking events",
     "Social and lifestyle gatherings",
@@ -27,16 +33,44 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <Navbar />
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6" ref={ref}>
+
+      {/* Floating blurred background orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <motion.div
+          animate={{ x: [0, 40, -20, 0], y: [0, -30, 20, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-20 -left-32 w-[400px] h-[400px] rounded-full bg-primary/8 blur-[120px]"
+        />
+        <motion.div
+          animate={{ x: [0, -30, 20, 0], y: [0, 40, -20, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[40%] -right-32 w-[350px] h-[350px] rounded-full bg-primary/6 blur-[100px]"
+        />
+        <motion.div
+          animate={{ x: [0, 20, -30, 0], y: [0, -20, 30, 0] }}
+          transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-20 left-1/4 w-[300px] h-[300px] rounded-full bg-primary/5 blur-[130px]"
+        />
+        <motion.div
+          animate={{ x: [0, -15, 25, 0], y: [0, 25, -15, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[60%] left-[60%] w-[250px] h-[250px] rounded-full bg-accent/5 blur-[100px]"
+        />
+      </div>
+
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 relative" ref={ref}>
         <div className="container mx-auto max-w-4xl">
 
           {/* Hero */}
-          <motion.div {...fadeUp()} className="text-center mb-16 sm:mb-24">
-            <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
+          <motion.div {...fadeUp()} className="text-center mb-20 sm:mb-28">
+            <motion.p
+              {...fadeIn(0.1)}
+              className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4"
+            >
               About
-            </p>
+            </motion.p>
             <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8">
               About <span className="text-gold-gradient">VION Events</span>
             </h1>
@@ -49,14 +83,17 @@ const About = () => {
           </motion.div>
 
           {/* Who We Are */}
-          <motion.div {...fadeUp(0.15)} className="mb-16 sm:mb-24">
-            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+          <motion.div {...fadeUp(0.15)} className="mb-20 sm:mb-28 relative">
+            <motion.div
+              {...fadeIn(0.2)}
+              className="absolute -top-10 -right-20 w-40 h-40 rounded-full bg-primary/5 blur-[60px]"
+            />
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6">
               Who We <span className="text-gold-gradient">Are</span>
             </h2>
             <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed font-body font-light text-center max-w-3xl mx-auto">
               VION Events was built with a simple belief:{" "}
-              <span className="text-foreground font-medium">
+              <span className="text-muted-foreground font-light">
                 great events are not accidental, they are designed with purpose.
               </span>
             </p>
@@ -66,8 +103,11 @@ const About = () => {
           </motion.div>
 
           {/* What We Do */}
-          <motion.div {...fadeUp(0.3)} className="mb-16 sm:mb-24">
-            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+          <motion.div {...fadeUp(0.3)} className="mb-20 sm:mb-28 relative">
+            <motion.div
+              {...fadeIn(0.35)}
+              className="absolute -bottom-10 -left-20 w-48 h-48 rounded-full bg-primary/4 blur-[80px]"
+            />
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6">
               What We <span className="text-gold-gradient">Do</span>
             </h2>
@@ -81,7 +121,8 @@ const About = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
-                  className="flex items-center gap-3 p-4 rounded-lg bg-primary/5 border border-primary/10"
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  className="flex items-center gap-3 p-4 rounded-lg bg-primary/5 border border-primary/10 backdrop-blur-sm transition-colors hover:bg-primary/10"
                 >
                   <span className="text-primary font-display text-sm font-bold">
                     {String(i + 1).padStart(2, "0")}
@@ -96,8 +137,11 @@ const About = () => {
           </motion.div>
 
           {/* Our Approach */}
-          <motion.div {...fadeUp(0.45)} className="mb-16 sm:mb-24">
-            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+          <motion.div {...fadeUp(0.45)} className="mb-20 sm:mb-28 relative">
+            <motion.div
+              {...fadeIn(0.5)}
+              className="absolute top-0 right-0 w-56 h-56 rounded-full bg-primary/5 blur-[90px]"
+            />
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6">
               Our <span className="text-gold-gradient">Approach</span>
             </h2>
@@ -109,14 +153,14 @@ const About = () => {
                 <motion.div
                   key={item.title}
                   className="text-center group"
-                  whileHover={{ y: -6 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                 >
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={inView ? { scale: 1 } : {}}
                     transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                    className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors"
+                    className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-all duration-300 group-hover:shadow-[0_0_20px_hsl(var(--primary)/0.2)]"
                   >
                     <span className="text-primary font-display text-lg font-bold">
                       {String(i + 1).padStart(2, "0")}
@@ -135,8 +179,11 @@ const About = () => {
           </motion.div>
 
           {/* Our Vision */}
-          <motion.div {...fadeUp(0.6)} className="mb-16 sm:mb-24">
-            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+          <motion.div {...fadeUp(0.6)} className="mb-20 sm:mb-28 relative">
+            <motion.div
+              {...fadeIn(0.65)}
+              className="absolute -bottom-10 right-1/4 w-44 h-44 rounded-full bg-primary/6 blur-[70px]"
+            />
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6">
               Our <span className="text-gold-gradient">Vision</span>
             </h2>
@@ -147,7 +194,6 @@ const About = () => {
 
           {/* Closing */}
           <motion.div {...fadeUp(0.75)} className="text-center">
-            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
             <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
               <span className="text-gold-gradient">VION Events</span>
             </h2>
