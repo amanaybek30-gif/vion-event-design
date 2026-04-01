@@ -243,7 +243,62 @@ const Admin = () => {
     fetchTestimonials();
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const fetchAnnouncements = async () => {
+    const { data } = await supabase.from("announcements").select("*").order("sort_order");
+    if (data) setAnnouncements(data as AnnouncementItem[]);
+  };
+
+  const handleAnnouncementImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editAnnouncement) return;
+    setAnnouncementImageUploading(true);
+    const url = await uploadFile(file, "announcements");
+    if (url) setEditAnnouncement({ ...editAnnouncement, image_url: url });
+    setAnnouncementImageUploading(false);
+    if (announcementImageRef.current) announcementImageRef.current.value = "";
+  };
+
+  const handleAnnouncementVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editAnnouncement) return;
+    setAnnouncementVideoUploading(true);
+    const url = await uploadFile(file, "announcements", "videos");
+    if (url) setEditAnnouncement({ ...editAnnouncement, video_url: url });
+    setAnnouncementVideoUploading(false);
+    if (announcementVideoRef.current) announcementVideoRef.current.value = "";
+  };
+
+  const saveAnnouncement = async () => {
+    if (!editAnnouncement) return;
+    const payload = {
+      title: editAnnouncement.title,
+      header: editAnnouncement.header,
+      body: editAnnouncement.body,
+      image_url: editAnnouncement.image_url,
+      video_url: editAnnouncement.video_url,
+      link_url: editAnnouncement.link_url,
+      link_label: editAnnouncement.link_label,
+      button_text: editAnnouncement.button_text,
+      button_url: editAnnouncement.button_url,
+      category: editAnnouncement.category,
+      is_published: editAnnouncement.is_published,
+      is_ticker: editAnnouncement.is_ticker,
+      sort_order: editAnnouncement.sort_order,
+    };
+    if (editAnnouncement.id) {
+      await supabase.from("announcements").update(payload).eq("id", editAnnouncement.id);
+    } else {
+      await supabase.from("announcements").insert(payload);
+    }
+    setEditAnnouncement(null);
+    fetchAnnouncements();
+  };
+
+  const deleteAnnouncement = async (id: string) => {
+    await supabase.from("announcements").delete().eq("id", id);
+    fetchAnnouncements();
+  };
+
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setError("Invalid credentials");
