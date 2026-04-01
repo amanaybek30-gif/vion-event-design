@@ -2,92 +2,160 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { usePageContent } from "@/hooks/usePageContent";
-
-const defaults = {
-  subtitle: "Who We Are",
-  title_start: "Not Just Events.",
-  title_highlight: "Experiences.",
-  description: "We are a full-service event company turning ideas into powerful experiences — from corporate forums to cultural activations and premium social events.",
-  pillar1_title: "Creativity",
-  pillar1_desc: "Bold ideas that push boundaries",
-  pillar2_title: "Precision",
-  pillar2_desc: "Flawless execution, every detail",
-  pillar3_title: "Storytelling",
-  pillar3_desc: "Narratives that resonate deeply",
-  extra: "More content coming soon. Stay tuned to learn more about our story, our team, and what drives us to create moments people remember.",
-};
 
 const About = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const { content: c } = usePageContent("about", defaults);
+
+  const fadeUp = (delay = 0) => ({
+    initial: { opacity: 0, y: 40 },
+    animate: inView ? { opacity: 1, y: 0 } : {},
+    transition: { duration: 0.8, delay },
+  });
+
+  const services = [
+    "Business and networking events",
+    "Social and lifestyle gatherings",
+    "Brand-led experiences",
+    "Curated concept events",
+  ];
 
   const pillars = [
-    { label: c.pillar1_title, desc: c.pillar1_desc },
-    { label: c.pillar2_title, desc: c.pillar2_desc },
-    { label: c.pillar3_title, desc: c.pillar3_desc },
+    { title: "Clarity", desc: "Every event has a clear purpose" },
+    { title: "Experience", desc: "Guests are at the center of everything" },
+    { title: "Execution", desc: "Every detail is handled with precision" },
   ];
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6" ref={ref}>
-        <div className="container mx-auto max-w-4xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8 }}
-          >
+        <div className="container mx-auto max-w-4xl">
+
+          {/* Hero */}
+          <motion.div {...fadeUp()} className="text-center mb-16 sm:mb-24">
             <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
-              {c.subtitle}
+              About
             </p>
             <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8">
-              {c.title_start}{" "}
-              <span className="text-gold-gradient">{c.title_highlight}</span>
+              About <span className="text-gold-gradient">VION Events</span>
             </h1>
             <p className="text-muted-foreground text-sm sm:text-lg md:text-xl leading-relaxed font-body font-light max-w-3xl mx-auto">
-              {c.description}
+              At VION Events, everything we create is designed to be remembered.
+            </p>
+            <p className="text-muted-foreground text-sm sm:text-lg md:text-xl leading-relaxed font-body font-light max-w-3xl mx-auto mt-4">
+              We are an event company focused on delivering well-crafted experiences where people connect, engage, and enjoy moments that stay with them long after the event ends.
             </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mt-10 sm:mt-16"
-          >
-            {pillars.map((item, i) => (
-              <motion.div
-                key={item.label}
-                className="text-center group"
-                whileHover={{ y: -6 }}
-                transition={{ duration: 0.3 }}
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={inView ? { scale: 1 } : {}}
-                  transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                  className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors"
-                >
-                  <span className="text-primary font-display text-lg font-bold">{String(i + 1).padStart(2, "0")}</span>
-                </motion.div>
-                <h3 className="text-primary font-display text-lg sm:text-xl font-semibold mb-2">
-                  {item.label}
-                </h3>
-                <p className="text-muted-foreground text-xs sm:text-sm font-body">{item.desc}</p>
-              </motion.div>
-            ))}
+          {/* Who We Are */}
+          <motion.div {...fadeUp(0.15)} className="mb-16 sm:mb-24">
+            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6">
+              Who We <span className="text-gold-gradient">Are</span>
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed font-body font-light text-center max-w-3xl mx-auto">
+              VION Events was built with a simple belief:{" "}
+              <span className="text-foreground font-medium">
+                great events are not accidental, they are designed with purpose.
+              </span>
+            </p>
+            <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed font-body font-light text-center max-w-3xl mx-auto mt-4">
+              We bring together structure, creativity, and attention to detail to create environments where guests feel comfortable, engaged, and present.
+            </p>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-12 sm:mt-20 text-muted-foreground font-body text-sm sm:text-lg leading-relaxed"
-          >
-            <p>{c.extra}</p>
+          {/* What We Do */}
+          <motion.div {...fadeUp(0.3)} className="mb-16 sm:mb-24">
+            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6">
+              What We <span className="text-gold-gradient">Do</span>
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed font-body font-light text-center max-w-3xl mx-auto mb-8">
+              We create events that balance experience and intention, including:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+              {services.map((s, i) => (
+                <motion.div
+                  key={s}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={inView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
+                  className="flex items-center gap-3 p-4 rounded-lg bg-primary/5 border border-primary/10"
+                >
+                  <span className="text-primary font-display text-sm font-bold">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="text-foreground text-sm sm:text-base font-body">{s}</span>
+                </motion.div>
+              ))}
+            </div>
+            <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed font-body font-light text-center max-w-3xl mx-auto mt-8">
+              Every event is thoughtfully planned to ensure a smooth flow and a meaningful guest experience.
+            </p>
           </motion.div>
+
+          {/* Our Approach */}
+          <motion.div {...fadeUp(0.45)} className="mb-16 sm:mb-24">
+            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6">
+              Our <span className="text-gold-gradient">Approach</span>
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed font-body font-light text-center max-w-3xl mx-auto mb-10">
+              We focus on three things:
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+              {pillars.map((item, i) => (
+                <motion.div
+                  key={item.title}
+                  className="text-center group"
+                  whileHover={{ y: -6 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={inView ? { scale: 1 } : {}}
+                    transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
+                    className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors"
+                  >
+                    <span className="text-primary font-display text-lg font-bold">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </motion.div>
+                  <h3 className="text-primary font-display text-lg sm:text-xl font-semibold mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-muted-foreground text-xs sm:text-sm font-body">{item.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+            <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed font-body font-light text-center max-w-3xl mx-auto mt-10">
+              From the first impression to the final moment, we design events that feel natural, organized, and engaging.
+            </p>
+          </motion.div>
+
+          {/* Our Vision */}
+          <motion.div {...fadeUp(0.6)} className="mb-16 sm:mb-24">
+            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6">
+              Our <span className="text-gold-gradient">Vision</span>
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed font-body font-light text-center max-w-3xl mx-auto">
+              To build a brand known for creating experiences that stand out — not because they are loud, but because they are well thought out and unforgettable.
+            </p>
+          </motion.div>
+
+          {/* Closing */}
+          <motion.div {...fadeUp(0.75)} className="text-center">
+            <div className="w-16 h-[2px] bg-primary mx-auto mb-8" />
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+              <span className="text-gold-gradient">VION Events</span>
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-lg font-body font-light italic">
+              Designed to be remembered.
+            </p>
+          </motion.div>
+
         </div>
       </section>
       <Footer />
