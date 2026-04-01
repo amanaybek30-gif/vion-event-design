@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { ArrowRight, Users, QrCode, BarChart3, UserCircle, Brain, Settings, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import versHeroBg from "@/assets/vers-hero-bg.jpg";
 import { usePageContent } from "@/hooks/usePageContent";
 
