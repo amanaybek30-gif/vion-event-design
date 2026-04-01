@@ -44,6 +44,23 @@ interface Testimonial {
   sort_order: number;
 }
 
+interface AnnouncementItem {
+  id: string;
+  title: string;
+  header: string;
+  body: string;
+  image_url: string;
+  video_url: string;
+  link_url: string;
+  link_label: string;
+  button_text: string;
+  button_url: string;
+  category: string;
+  is_published: boolean;
+  is_ticker: boolean;
+  sort_order: number;
+}
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const getPublicUrl = (path: string, bucket = "images") => `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 
