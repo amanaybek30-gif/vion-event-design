@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          body: string
+          button_text: string
+          button_url: string
+          category: string
+          created_at: string
+          header: string
+          id: string
+          image_url: string
+          is_published: boolean
+          is_ticker: boolean
+          link_label: string
+          link_url: string
+          sort_order: number
+          title: string
+          updated_at: string
+          video_url: string
+        }
+        Insert: {
+          body?: string
+          button_text?: string
+          button_url?: string
+          category?: string
+          created_at?: string
+          header?: string
+          id?: string
+          image_url?: string
+          is_published?: boolean
+          is_ticker?: boolean
+          link_label?: string
+          link_url?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          video_url?: string
+        }
+        Update: {
+          body?: string
+          button_text?: string
+          button_url?: string
+          category?: string
+          created_at?: string
+          header?: string
+          id?: string
+          image_url?: string
+          is_published?: boolean
+          is_ticker?: boolean
+          link_label?: string
+          link_url?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
       carousel_images: {
         Row: {
           alt: string
