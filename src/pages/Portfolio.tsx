@@ -47,7 +47,9 @@ const Portfolio = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
+      <SEOHead title="Portfolio | VION Events" description="Explore our portfolio of premium events, corporate forums, and brand experiences." path="/portfolio" />
+      <PageBackground />
       <Navbar />
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
         <div className="container mx-auto max-w-6xl">

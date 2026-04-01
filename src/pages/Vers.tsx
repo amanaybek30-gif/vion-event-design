@@ -54,7 +54,8 @@ const Vers = () => {
   const { content: c } = usePageContent("vers", defaults);
 
   return (
-    <div className="min-h-screen bg-secondary text-secondary-foreground">
+    <div className="min-h-screen bg-secondary text-secondary-foreground relative overflow-hidden">
+      <SEOHead title="VERS | VION Event Registration System" description="Manage event registration, check-in, and performance analytics with VERS — VION's smart event platform." path="/vers" />
       <Navbar />
 
       {/* Hero */}
