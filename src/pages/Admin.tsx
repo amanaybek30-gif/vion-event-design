@@ -451,6 +451,7 @@ const Admin = () => {
     { key: "brand_video", label: "Brand Video" },
     { key: "trailer_video", label: "Trailer Video" },
     { key: "testimonials", label: "Testimonials" },
+    { key: "announcements", label: "News & Announcements" },
     { key: "services", label: "Services" },
     { key: "contact", label: "Contact" },
     { key: "vers", label: "VERS" },
