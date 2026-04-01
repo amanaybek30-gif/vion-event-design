@@ -99,6 +99,13 @@ const Admin = () => {
   const [testimonialAvatarUploading, setTestimonialAvatarUploading] = useState(false);
   const testimonialAvatarRef = useRef<HTMLInputElement>(null);
 
+  const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
+  const [editAnnouncement, setEditAnnouncement] = useState<AnnouncementItem | null>(null);
+  const [announcementImageUploading, setAnnouncementImageUploading] = useState(false);
+  const [announcementVideoUploading, setAnnouncementVideoUploading] = useState(false);
+  const announcementImageRef = useRef<HTMLInputElement>(null);
+  const announcementVideoRef = useRef<HTMLInputElement>(null);
+
   const portfolioFileRef = useRef<HTMLInputElement>(null);
   const galleryFileRef = useRef<HTMLInputElement>(null);
   const carouselFileRef = useRef<HTMLInputElement>(null);
