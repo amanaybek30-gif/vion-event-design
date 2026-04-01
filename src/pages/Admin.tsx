@@ -856,6 +856,108 @@ const Admin = () => {
             />
           </div>
         )}
+
+        {tab === "announcements" && (
+          <div>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="font-display text-xl font-semibold">News & Announcements</h2>
+              <Button onClick={() => setEditAnnouncement({ id: "", title: "", header: "", body: "", image_url: "", video_url: "", link_url: "", link_label: "", button_text: "", button_url: "", category: "announcement", is_published: false, is_ticker: false, sort_order: announcements.length })} className="bg-gold-gradient text-primary-foreground">
+                <Plus className="w-4 h-4 mr-2" /> Add Announcement
+              </Button>
+            </div>
+
+            {editAnnouncement && (
+              <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+                <Input placeholder="Title" value={editAnnouncement.title} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, title: e.target.value })} />
+                <Input placeholder="Header / Subtitle" value={editAnnouncement.header} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, header: e.target.value })} />
+                <Textarea placeholder="Body content" value={editAnnouncement.body} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, body: e.target.value })} rows={4} />
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label className="text-sm text-muted-foreground font-body block mb-1">Category</label>
+                    <select value={editAnnouncement.category} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, category: e.target.value })} className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm">
+                      <option value="announcement">Announcement</option>
+                      <option value="news">News</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2 pt-6">
+                    <input type="checkbox" checked={editAnnouncement.is_published} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, is_published: e.target.checked })} id="pub" />
+                    <label htmlFor="pub" className="text-sm font-body">Published</label>
+                  </div>
+                  <div className="flex items-center gap-2 pt-6">
+                    <input type="checkbox" checked={editAnnouncement.is_ticker} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, is_ticker: e.target.checked })} id="ticker" />
+                    <label htmlFor="ticker" className="text-sm font-body">Show in Ticker</label>
+                  </div>
+                </div>
+
+                {/* Image */}
+                <div className="space-y-2">
+                  <label className="text-sm text-muted-foreground font-body">Image (upload from device or paste URL)</label>
+                  {editAnnouncement.image_url && <img src={editAnnouncement.image_url} alt="Preview" className="w-32 h-20 object-cover rounded-sm border border-border" />}
+                  <div className="flex gap-2">
+                    <input type="file" accept="image/*" ref={announcementImageRef} onChange={handleAnnouncementImageUpload} className="hidden" />
+                    <Button type="button" variant="outline" size="sm" disabled={announcementImageUploading} onClick={() => announcementImageRef.current?.click()}>
+                      <Upload className="w-4 h-4 mr-2" /> {announcementImageUploading ? "Uploading..." : "Upload Image"}
+                    </Button>
+                  </div>
+                  <Input placeholder="Or paste image URL" value={editAnnouncement.image_url} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, image_url: e.target.value })} />
+                </div>
+
+                {/* Video */}
+                <div className="space-y-2">
+                  <label className="text-sm text-muted-foreground font-body">Video (upload from device or paste URL)</label>
+                  {editAnnouncement.video_url && <video src={editAnnouncement.video_url} className="w-48 h-28 object-cover rounded-sm border border-border" muted playsInline />}
+                  <div className="flex gap-2">
+                    <input type="file" accept="video/*" ref={announcementVideoRef} onChange={handleAnnouncementVideoUpload} className="hidden" />
+                    <Button type="button" variant="outline" size="sm" disabled={announcementVideoUploading} onClick={() => announcementVideoRef.current?.click()}>
+                      <Upload className="w-4 h-4 mr-2" /> {announcementVideoUploading ? "Uploading..." : "Upload Video"}
+                    </Button>
+                  </div>
+                  <Input placeholder="Or paste video URL" value={editAnnouncement.video_url} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, video_url: e.target.value })} />
+                </div>
+
+                {/* Links & Buttons */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input placeholder="Link URL" value={editAnnouncement.link_url} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, link_url: e.target.value })} />
+                  <Input placeholder="Link Label" value={editAnnouncement.link_label} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, link_label: e.target.value })} />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Input placeholder="Button Text" value={editAnnouncement.button_text} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, button_text: e.target.value })} />
+                  <Input placeholder="Button URL" value={editAnnouncement.button_url} onChange={(e) => setEditAnnouncement({ ...editAnnouncement, button_url: e.target.value })} />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button onClick={saveAnnouncement} className="bg-gold-gradient text-primary-foreground">Save</Button>
+                  <Button variant="outline" onClick={() => setEditAnnouncement(null)}>Cancel</Button>
+                </div>
+              </div>
+            )}
+
+            <div className="space-y-4">
+              {announcements.map((a) => (
+                <div key={a.id} className="flex items-center gap-4 border border-border rounded-sm p-4">
+                  {a.image_url && <img src={a.image_url} alt={a.title} className="w-16 h-12 object-cover rounded-sm" />}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold">{a.title}</p>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full ${a.is_published ? "bg-green-500/20 text-green-400" : "bg-muted text-muted-foreground"}`}>
+                        {a.is_published ? "Published" : "Draft"}
+                      </span>
+                      {a.is_ticker && <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/20 text-primary">Ticker</span>}
+                    </div>
+                    <p className="text-muted-foreground text-xs capitalize">{a.category}</p>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setEditAnnouncement({ ...a })}>Edit</Button>
+                  <Button variant="ghost" size="icon" onClick={() => deleteAnnouncement(a.id)}>
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
+              ))}
+              {announcements.length === 0 && <p className="text-muted-foreground text-sm text-center py-8">No announcements yet. Add your first one.</p>}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
