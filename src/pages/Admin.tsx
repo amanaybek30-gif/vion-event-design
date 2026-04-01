@@ -160,7 +160,6 @@ const Admin = () => {
     setTrailerVideoUploading(false);
     if (trailerVideoFileRef.current) trailerVideoFileRef.current.value = "";
   };
-  };
 
   const fetchPortfolio = async () => {
     const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
