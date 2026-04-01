@@ -1,5 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PageBackground from "@/components/PageBackground";
+import SEOHead from "@/components/SEOHead";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +34,9 @@ const Gallery = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
+      <SEOHead title="Gallery | VION Events" description="Browse our gallery of beautifully captured event moments." path="/gallery" />
+      <PageBackground />
       <Navbar />
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6" ref={ref}>
         <div className="container mx-auto max-w-6xl">

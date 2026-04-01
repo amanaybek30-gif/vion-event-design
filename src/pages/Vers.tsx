@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { ArrowRight, Users, QrCode, BarChart3, UserCircle, Brain, Settings, Shield } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEOHead from "@/components/SEOHead";
 import versHeroBg from "@/assets/vers-hero-bg.jpg";
 import { usePageContent } from "@/hooks/usePageContent";
 
@@ -53,7 +54,8 @@ const Vers = () => {
   const { content: c } = usePageContent("vers", defaults);
 
   return (
-    <div className="min-h-screen bg-secondary text-secondary-foreground">
+    <div className="min-h-screen bg-secondary text-secondary-foreground relative overflow-hidden">
+      <SEOHead title="VERS | VION Event Registration System" description="Manage event registration, check-in, and performance analytics with VERS — VION's smart event platform." path="/vers" />
       <Navbar />
 
       {/* Hero */}
