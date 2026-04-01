@@ -132,6 +132,7 @@ const Admin = () => {
       fetchBrandVideo();
       fetchTrailerVideo();
       fetchTestimonials();
+      fetchAnnouncements();
     }
   }, [authed]);
 
