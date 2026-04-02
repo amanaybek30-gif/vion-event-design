@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowRight, ExternalLink } from "lucide-react";
+import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
 
 interface Announcement {
   id: string;
@@ -18,9 +18,9 @@ interface Announcement {
 }
 
 const categoryColors: Record<string, string> = {
-  announcement: "bg-primary/20 text-primary",
-  news: "bg-blue-500/20 text-blue-400",
-  other: "bg-accent/20 text-accent-foreground",
+  announcement: "bg-primary/20 text-primary border border-primary/30",
+  news: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+  other: "bg-accent/20 text-accent-foreground border border-accent/30",
 };
 
 const AnnouncementsSection = () => {
@@ -29,7 +29,7 @@ const AnnouncementsSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetchAnnouncements = async () => {
       const { data } = await supabase
         .from("announcements")
         .select("*")
@@ -37,113 +37,168 @@ const AnnouncementsSection = () => {
         .order("sort_order");
       if (data) setAnnouncements(data);
     };
-    fetch();
+    fetchAnnouncements();
   }, []);
 
   if (announcements.length === 0) return null;
 
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6" ref={ref}>
-      <div className="container mx-auto max-w-6xl">
+    <section className="py-20 sm:py-28 px-4 sm:px-6 relative" ref={ref}>
+      {/* Decorative background glow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
+      </div>
+
+      <div className="container mx-auto max-w-6xl relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-14 sm:mb-20"
         >
-          <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
-            Latest Updates
-          </p>
+          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-6">
+            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <span className="text-primary text-xs font-body tracking-widest uppercase">
+              Latest Updates
+            </span>
+          </div>
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold">
             News & <span className="text-gold-gradient">Announcements</span>
           </h2>
+          <p className="text-muted-foreground font-body text-sm sm:text-base mt-4 max-w-xl mx-auto">
+            Stay informed with our latest events, updates, and exciting announcements.
+          </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className={`grid gap-8 ${
+          announcements.length === 1
+            ? "grid-cols-1 max-w-2xl mx-auto"
+            : announcements.length === 2
+            ? "grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto"
+            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+        }`}>
           {announcements.map((item, i) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 50 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className="border border-border rounded-lg overflow-hidden bg-card/50 backdrop-blur-sm group hover:border-primary/30 transition-all duration-500"
+              transition={{ duration: 0.7, delay: i * 0.15 }}
+              whileHover={{ y: -10 }}
+              className="relative group"
             >
-              {/* Media */}
-              {item.image_url && !item.video_url && (
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={item.image_url}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-                </div>
-              )}
-              {item.video_url && (
-                <div className="relative h-48 overflow-hidden">
-                  <video
-                    src={item.video_url}
-                    className="w-full h-full object-cover"
-                    muted
-                    playsInline
-                    autoPlay
-                    loop
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-                </div>
-              )}
+              {/* Glow effect on hover */}
+              <div className="absolute -inset-0.5 bg-gradient-to-b from-primary/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
 
-              <div className="p-5 sm:p-6 space-y-3">
-                {/* Category badge */}
-                <span
-                  className={`inline-block text-[10px] sm:text-xs font-body tracking-widest uppercase px-3 py-1 rounded-full ${
-                    categoryColors[item.category] || categoryColors.other
-                  }`}
-                >
-                  {item.category}
-                </span>
-
-                <h3 className="font-display text-lg sm:text-xl font-semibold leading-tight">
-                  {item.title}
-                </h3>
-
-                {item.header && (
-                  <p className="text-muted-foreground text-sm font-body font-medium">
-                    {item.header}
-                  </p>
+              <div className="relative border border-border/60 rounded-xl overflow-hidden bg-card/70 backdrop-blur-md hover:border-primary/40 transition-all duration-500 h-full flex flex-col">
+                {/* Media */}
+                {item.image_url && !item.video_url && (
+                  <div className="relative h-56 overflow-hidden">
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+                    {/* Category badge overlaid on image */}
+                    <div className="absolute top-4 left-4">
+                      <span
+                        className={`inline-block text-[10px] sm:text-xs font-body tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-sm ${
+                          categoryColors[item.category] || categoryColors.other
+                        }`}
+                      >
+                        {item.category}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                {item.video_url && (
+                  <div className="relative h-56 overflow-hidden">
+                    <video
+                      src={item.video_url}
+                      className="w-full h-full object-cover"
+                      muted
+                      playsInline
+                      autoPlay
+                      loop
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
+                    <div className="absolute top-4 left-4">
+                      <span
+                        className={`inline-block text-[10px] sm:text-xs font-body tracking-widest uppercase px-3 py-1 rounded-full backdrop-blur-sm ${
+                          categoryColors[item.category] || categoryColors.other
+                        }`}
+                      >
+                        {item.category}
+                      </span>
+                    </div>
+                  </div>
                 )}
 
-                {item.body && (
-                  <p className="text-muted-foreground text-xs sm:text-sm font-body leading-relaxed line-clamp-3">
-                    {item.body}
-                  </p>
-                )}
+                <div className="p-6 sm:p-7 space-y-4 flex-1 flex flex-col">
+                  {/* Category badge if no media */}
+                  {!item.image_url && !item.video_url && (
+                    <span
+                      className={`inline-block text-[10px] sm:text-xs font-body tracking-widest uppercase px-3 py-1 rounded-full w-fit ${
+                        categoryColors[item.category] || categoryColors.other
+                      }`}
+                    >
+                      {item.category}
+                    </span>
+                  )}
 
-                {/* Links and buttons */}
-                <div className="flex flex-wrap gap-3 pt-2">
-                  {item.button_text && item.button_url && (
-                    <a
-                      href={item.button_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 bg-gold-gradient text-primary-foreground px-4 py-2 text-xs font-body font-semibold tracking-wider uppercase rounded-sm hover:opacity-90 transition-opacity"
-                    >
-                      {item.button_text}
-                      <ArrowRight className="w-3 h-3" />
-                    </a>
+                  <h3 className="font-display text-xl sm:text-2xl font-bold leading-tight group-hover:text-primary transition-colors duration-300">
+                    {item.title}
+                  </h3>
+
+                  {item.header && (
+                    <p className="text-foreground/80 text-sm sm:text-base font-body font-medium">
+                      {item.header}
+                    </p>
                   )}
-                  {item.link_url && item.link_label && (
-                    <a
-                      href={item.link_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-primary text-xs font-body tracking-wider hover:text-primary/80 transition-colors"
-                    >
-                      {item.link_label}
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
+
+                  {item.body && (
+                    <p className="text-muted-foreground text-sm font-body leading-relaxed line-clamp-4 flex-1">
+                      {item.body}
+                    </p>
                   )}
+
+                  {/* Links and buttons */}
+                  <div className="flex flex-wrap gap-3 pt-3 mt-auto">
+                    {item.button_text && item.button_url && (
+                      <a
+                        href={item.button_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-gold-gradient text-primary-foreground px-5 py-2.5 text-xs font-body font-semibold tracking-wider uppercase rounded-lg hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
+                      >
+                        {item.button_text}
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                    {item.link_url && item.link_label && (
+                      <a
+                        href={item.link_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-primary text-sm font-body tracking-wider hover:text-primary/80 transition-colors border border-primary/20 px-4 py-2 rounded-lg hover:bg-primary/5"
+                      >
+                        {item.link_label}
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                    {/* Fallback link if no button/link but has link_url */}
+                    {item.link_url && !item.link_label && !item.button_text && (
+                      <a
+                        href={item.link_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-primary text-sm font-body tracking-wider hover:text-primary/80 transition-colors border border-primary/20 px-4 py-2 rounded-lg hover:bg-primary/5"
+                      >
+                        Learn More
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
