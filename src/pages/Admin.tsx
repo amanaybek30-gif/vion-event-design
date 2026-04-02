@@ -300,8 +300,8 @@ const Admin = () => {
   };
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setError("Invalid credentials");
+    const { error: loginError } = await supabase.auth.signInWithPassword({ email, password });
+    if (loginError) setError("Invalid credentials");
     else setError("");
   };
 
