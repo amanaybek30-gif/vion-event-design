@@ -93,7 +93,7 @@ const Momentique = () => {
       <Navbar />
 
       {/* Hero with Background Image */}
-      <section ref={heroRef} className="relative min-h-[85vh] md:min-h-screen flex items-center justify-center overflow-hidden">
+      <section ref={heroRef} className="relative min-h-[85vh] md:min-h-[100vh] flex items-center justify-center overflow-hidden pt-16 md:pt-20">
         <motion.div className="absolute inset-0" style={{ y: heroY }}>
           <img src={heroImg} alt="Event crowd capturing moments" className="w-full h-[120%] object-cover" width={1920} height={1080} />
           <div className="absolute inset-0 bg-black/55" />
@@ -136,11 +136,23 @@ const Momentique = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="font-body text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8 sm:mb-10"
+            className="font-body text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-6 sm:mb-8"
             style={{ color: "hsl(0, 0%, 78%)" }}
           >
             From private events to conferences, Momentique transforms every attendee into a content creator, ensuring no moment is missed.
           </motion.p>
+          <motion.a
+            href="https://momentique.vionevents.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-primary text-primary-foreground font-body text-sm tracking-wider uppercase hover:bg-primary/90 transition-all duration-300 shadow-[0_0_30px_-5px_hsl(var(--primary)/0.4)] hover:shadow-[0_0_40px_-5px_hsl(var(--primary)/0.6)]"
+          >
+            <Camera size={16} />
+            Sneak Peek
+          </motion.a>
         </motion.div>
 
         <motion.div
