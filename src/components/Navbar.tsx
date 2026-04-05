@@ -57,7 +57,7 @@ const Navbar = () => {
               <div key={link.label} className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setSolutionsOpen(!solutionsOpen)}
-                  className={`text-xs font-body tracking-widest uppercase transition-colors duration-300 inline-flex items-center gap-1 ${
+                  className={`text-xs font-body tracking-widest uppercase transition-colors duration-300 inline-flex items-center gap-1.5 ${
                     isSolutionActive
                       ? "text-primary"
                       : "text-secondary-foreground/70 hover:text-primary"
@@ -66,32 +66,45 @@ const Navbar = () => {
                   {link.label}
                   <ChevronDown
                     size={12}
-                    className={`transition-transform duration-200 ${solutionsOpen ? "rotate-180" : ""}`}
+                    className={`transition-transform duration-300 ${solutionsOpen ? "rotate-180" : ""}`}
                   />
                 </button>
                 <AnimatePresence>
                   {solutionsOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: -8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute top-full left-0 mt-3 bg-secondary border border-border/30 rounded-sm shadow-xl min-w-[160px] overflow-hidden"
+                      initial={{ opacity: 0, y: -4, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.97 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-4 min-w-[220px] overflow-hidden rounded-lg border border-primary/15 bg-secondary/98 backdrop-blur-xl shadow-[0_12px_40px_-8px_rgba(0,0,0,0.5)]"
                     >
-                      {link.dropdown.map((sub) => (
-                        <Link
-                          key={sub.href}
-                          to={sub.href}
-                          onClick={() => setSolutionsOpen(false)}
-                          className={`block px-5 py-3 text-xs font-body tracking-widest uppercase transition-colors duration-200 ${
-                            location.pathname === sub.href
-                              ? "text-primary bg-primary/10"
-                              : "text-secondary-foreground/70 hover:text-primary hover:bg-primary/5"
-                          }`}
-                        >
-                          {sub.label}
-                        </Link>
-                      ))}
+                      <div className="p-1.5">
+                        {link.dropdown.map((sub, idx) => (
+                          <Link
+                            key={sub.href}
+                            to={sub.href}
+                            onClick={() => setSolutionsOpen(false)}
+                            className={`group flex items-center gap-3 px-4 py-3 rounded-md text-xs font-body tracking-widest uppercase transition-all duration-200 ${
+                              location.pathname === sub.href
+                                ? "text-primary bg-primary/10"
+                                : "text-secondary-foreground/70 hover:text-primary hover:bg-primary/5"
+                            }`}
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full transition-all duration-200 ${
+                              location.pathname === sub.href
+                                ? "bg-primary scale-100"
+                                : "bg-secondary-foreground/20 group-hover:bg-primary group-hover:scale-110"
+                            }`} />
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+                      <div className="px-4 py-2.5 text-center">
+                        <span className="text-[10px] font-body tracking-wider uppercase text-secondary-foreground/30">
+                          Powered by VION
+                        </span>
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
