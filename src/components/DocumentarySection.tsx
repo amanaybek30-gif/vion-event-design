@@ -1,6 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { Film, Droplets, Users, Play } from "lucide-react";
+import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 const DocumentarySection = () => {
