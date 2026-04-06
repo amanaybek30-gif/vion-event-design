@@ -60,7 +60,7 @@ const BrandStatement = () => {
             loop
             muted
             playsInline
-            preload="auto"
+            preload="metadata"
           />
         ) : (
           <div className="w-full h-full bg-secondary" />

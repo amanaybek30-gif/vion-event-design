@@ -1,19 +1,22 @@
+import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import HomeCarousel from "@/components/HomeCarousel";
-import AboutSection from "@/components/AboutSection";
-import ServicesSection from "@/components/ServicesSection";
-import ProcessSection from "@/components/ProcessSection";
-import WhySection from "@/components/WhySection";
-import BrandStatement from "@/components/BrandStatement";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import CTASection from "@/components/CTASection";
-import DocumentarySection from "@/components/DocumentarySection";
 import Footer from "@/components/Footer";
 import NewsTicker from "@/components/NewsTicker";
 import AnnouncementsSection from "@/components/AnnouncementsSection";
 import PageBackground from "@/components/PageBackground";
 import SEOHead from "@/components/SEOHead";
+
+// Lazy load below-fold sections
+const AboutSection = lazy(() => import("@/components/AboutSection"));
+const ServicesSection = lazy(() => import("@/components/ServicesSection"));
+const ProcessSection = lazy(() => import("@/components/ProcessSection"));
+const WhySection = lazy(() => import("@/components/WhySection"));
+const BrandStatement = lazy(() => import("@/components/BrandStatement"));
+const TestimonialsSection = lazy(() => import("@/components/TestimonialsSection"));
+const CTASection = lazy(() => import("@/components/CTASection"));
+const DocumentarySection = lazy(() => import("@/components/DocumentarySection"));
 
 const Index = () => {
   return (
@@ -29,14 +32,16 @@ const Index = () => {
       <HeroSection />
       <HomeCarousel />
       <AnnouncementsSection />
-      <AboutSection />
-      <ServicesSection />
-      <DocumentarySection />
-      <ProcessSection />
-      <WhySection />
-      <BrandStatement />
-      <TestimonialsSection />
-      <CTASection />
+      <Suspense fallback={null}>
+        <AboutSection />
+        <ServicesSection />
+        <DocumentarySection />
+        <ProcessSection />
+        <WhySection />
+        <BrandStatement />
+        <TestimonialsSection />
+        <CTASection />
+      </Suspense>
       <Footer />
     </div>
   );
