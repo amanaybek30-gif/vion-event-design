@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -14,6 +14,7 @@ const HomeCarousel = () => {
   const [images, setImages] = useState<CarouselImage[]>([]);
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
+  const preloadedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const fetch = async () => {
@@ -21,10 +22,33 @@ const HomeCarousel = () => {
         .from("carousel_images")
         .select("*")
         .order("sort_order");
-      if (data) setImages(data);
+      if (data) {
+        setImages(data);
+        // Preload first 3 images immediately
+        data.slice(0, 3).forEach((img) => {
+          const link = document.createElement("link");
+          link.rel = "preload";
+          link.as = "image";
+          link.href = img.src;
+          document.head.appendChild(link);
+          preloadedRef.current.add(img.src);
+        });
+      }
     };
     fetch();
   }, []);
+
+  // Preload next image ahead of time
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const nextIdx = (current + 1) % images.length;
+    const nextSrc = images[nextIdx]?.src;
+    if (nextSrc && !preloadedRef.current.has(nextSrc)) {
+      const img = new Image();
+      img.src = nextSrc;
+      preloadedRef.current.add(nextSrc);
+    }
+  }, [current, images]);
 
   const next = useCallback(() => {
     if (images.length === 0) return;
@@ -67,6 +91,9 @@ const HomeCarousel = () => {
             exit="exit"
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
           />
         </AnimatePresence>
 

@@ -53,7 +53,7 @@ const DocumentarySection = () => {
               {/* Video thumbnail preview */}
               {trailerUrl ? (
                 <video
-                  src={trailerUrl}
+                  src={`${trailerUrl}#t=0.5`}
                   className="w-full h-full object-cover"
                   muted
                   playsInline
@@ -89,6 +89,7 @@ const DocumentarySection = () => {
               controls
               autoPlay
               playsInline
+              preload="auto"
             />
           ) : (
             <iframe

@@ -27,6 +27,16 @@ const Gallery = () => {
     fetchImages();
   }, []);
 
+  // Preload adjacent lightbox images
+  useEffect(() => {
+    if (selectedIdx === null || images.length === 0) return;
+    [-1, 1].forEach((offset) => {
+      const idx = (selectedIdx + offset + images.length) % images.length;
+      const img = new Image();
+      img.src = images[idx].src;
+    });
+  }, [selectedIdx, images]);
+
   const navigate = (dir: 1 | -1) => {
     if (selectedIdx === null) return;
     const next = (selectedIdx + dir + images.length) % images.length;
@@ -65,7 +75,7 @@ const Gallery = () => {
                   key={img.id}
                   initial={{ opacity: 0, y: 30 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: i * 0.05 }}
+                  transition={{ duration: 0.6, delay: Math.min(i * 0.03, 0.6) }}
                   whileHover={{ scale: 1.02 }}
                   className="break-inside-avoid cursor-pointer overflow-hidden rounded-sm group"
                   onClick={() => setSelectedIdx(i)}
@@ -75,6 +85,7 @@ const Gallery = () => {
                     alt={img.alt}
                     className="w-full rounded-sm group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    decoding="async"
                   />
                 </motion.div>
               ))}
