@@ -1,5 +1,5 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Film, Droplets, Users, Play } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -47,18 +47,40 @@ const DocumentarySection = () => {
         >
           {!isPlaying ? (
             <div
-              className="w-full h-full bg-secondary flex items-center justify-center cursor-pointer"
+              className="w-full h-full relative cursor-pointer"
               onClick={() => setIsPlaying(true)}
             >
-              <motion.div
-                className="w-14 sm:w-20 h-14 sm:h-20 rounded-full bg-primary/90 flex items-center justify-center"
-                whileHover={{ scale: 1.15 }}
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Play className="w-6 sm:w-8 h-6 sm:h-8 text-primary-foreground ml-0.5" />
-              </motion.div>
-              <p className="absolute bottom-4 sm:bottom-6 font-body text-xs sm:text-sm text-white/60">Click to play trailer</p>
+              {/* Video thumbnail preview */}
+              {trailerUrl ? (
+                <video
+                  src={trailerUrl}
+                  className="w-full h-full object-cover"
+                  muted
+                  playsInline
+                  preload="metadata"
+                />
+              ) : (
+                <iframe
+                  src="https://drive.google.com/file/d/1DdOKF7NZrYu6IRP79TsmOIHc40xia-B1/preview"
+                  className="w-full h-full pointer-events-none"
+                  loading="lazy"
+                  title="Flow Fest 2025 Documentary Trailer"
+                />
+              )}
+              {/* Overlay with play button */}
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center transition-colors hover:bg-black/30">
+                <motion.div
+                  className="w-14 sm:w-20 h-14 sm:h-20 rounded-full bg-primary/90 flex items-center justify-center"
+                  whileHover={{ scale: 1.15 }}
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Play className="w-6 sm:w-8 h-6 sm:h-8 text-primary-foreground ml-0.5" />
+                </motion.div>
+              </div>
+              <p className="absolute bottom-4 sm:bottom-6 left-0 right-0 text-center font-body text-xs sm:text-sm text-white/60">
+                Click to play trailer
+              </p>
             </div>
           ) : trailerUrl ? (
             <video
