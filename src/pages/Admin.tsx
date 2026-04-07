@@ -248,12 +248,16 @@ const Admin = () => {
     if (data) setAnnouncements(data as AnnouncementItem[]);
   };
 
+  const updateEditAnnouncement = (updates: Partial<AnnouncementItem>) => {
+    setEditAnnouncement((current) => (current ? { ...current, ...updates } : current));
+  };
+
   const handleAnnouncementImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !editAnnouncement) return;
     setAnnouncementImageUploading(true);
     const url = await uploadFile(file, "announcements");
-    if (url) setEditAnnouncement({ ...editAnnouncement, image_url: url });
+    if (url) updateEditAnnouncement({ image_url: url });
     setAnnouncementImageUploading(false);
     if (announcementImageRef.current) announcementImageRef.current.value = "";
   };
@@ -263,7 +267,7 @@ const Admin = () => {
     if (!file || !editAnnouncement) return;
     setAnnouncementVideoUploading(true);
     const url = await uploadFile(file, "announcements", "videos");
-    if (url) setEditAnnouncement({ ...editAnnouncement, video_url: url });
+    if (url) updateEditAnnouncement({ video_url: url });
     setAnnouncementVideoUploading(false);
     if (announcementVideoRef.current) announcementVideoRef.current.value = "";
   };
@@ -285,13 +289,17 @@ const Admin = () => {
       is_ticker: editAnnouncement.is_ticker,
       sort_order: editAnnouncement.sort_order,
     };
-    if (editAnnouncement.id) {
-      await supabase.from("announcements").update(payload).eq("id", editAnnouncement.id);
-    } else {
-      await supabase.from("announcements").insert(payload);
+    const { error } = editAnnouncement.id
+      ? await supabase.from("announcements").update(payload).eq("id", editAnnouncement.id)
+      : await supabase.from("announcements").insert(payload);
+
+    if (error) {
+      console.error("Failed to save announcement", error);
+      return;
     }
+
     setEditAnnouncement(null);
-    fetchAnnouncements();
+    await fetchAnnouncements();
   };
 
   const deleteAnnouncement = async (id: string) => {

@@ -1,21 +1,6 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
-
-interface Announcement {
-  id: string;
-  title: string;
-  header: string;
-  body: string;
-  image_url: string;
-  video_url: string;
-  link_url: string;
-  link_label: string;
-  button_text: string;
-  button_url: string;
-  category: string;
-}
+import { usePublishedAnnouncements } from "@/hooks/usePublishedAnnouncements";
 
 const categoryColors: Record<string, string> = {
   announcement: "bg-primary/15 text-primary border border-primary/30",
@@ -24,25 +9,9 @@ const categoryColors: Record<string, string> = {
 };
 
 const AnnouncementsSection = () => {
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const { announcements, loading } = usePublishedAnnouncements();
 
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      const { data } = await supabase
-        .from("announcements")
-        .select("*")
-        .eq("is_published", true)
-        .order("sort_order");
-
-      if (data) {
-        setAnnouncements(data);
-      }
-    };
-
-    fetchAnnouncements();
-  }, []);
-
-  if (announcements.length === 0) return null;
+  if (loading || announcements.length === 0) return null;
 
   return (
     <section className="py-20 sm:py-28 px-4 sm:px-6 relative">
