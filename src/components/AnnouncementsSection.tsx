@@ -1,6 +1,14 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, ExternalLink, Sparkles } from "lucide-react";
-import { usePublishedAnnouncements } from "@/hooks/usePublishedAnnouncements";
+import { ArrowRight, ExternalLink, Sparkles, Eye } from "lucide-react";
+import { usePublishedAnnouncements, PublishedAnnouncement } from "@/hooks/usePublishedAnnouncements";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const categoryColors: Record<string, string> = {
   announcement: "bg-primary/15 text-primary border border-primary/30",
@@ -10,57 +18,102 @@ const categoryColors: Record<string, string> = {
 
 const AnnouncementsSection = () => {
   const { announcements, loading } = usePublishedAnnouncements();
+  const [selected, setSelected] = useState<PublishedAnnouncement | null>(null);
 
   if (loading || announcements.length === 0) return null;
 
-  return (
-    <section className="py-20 sm:py-28 px-4 sm:px-6 relative">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
+  const renderActions = (item: PublishedAnnouncement, size: "sm" | "lg" = "sm") => {
+    const primaryActionUrl = item.button_url || item.link_url;
+    const showSecondaryLink = Boolean(item.link_url && item.link_label && item.link_url !== primaryActionUrl);
+    const btnPadding = size === "lg" ? "px-6 py-3 text-sm" : "px-5 py-2.5 text-xs";
+
+    return (
+      <div className="flex flex-wrap gap-3">
+        {item.button_text && primaryActionUrl && (
+          <a
+            href={primaryActionUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center gap-2 bg-gold-gradient text-primary-foreground ${btnPadding} font-body font-semibold tracking-wider uppercase rounded-lg hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300`}
+          >
+            {item.button_text}
+            <ArrowRight className="w-3.5 h-3.5" />
+          </a>
+        )}
+
+        {showSecondaryLink && (
+          <a
+            href={item.link_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-primary text-sm font-body tracking-wider hover:text-primary/80 transition-colors border border-primary/20 px-4 py-2 rounded-lg hover:bg-primary/5"
+          >
+            {item.link_label}
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        )}
+
+        {!item.button_text && item.link_url && (
+          <a
+            href={item.link_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-primary text-sm font-body tracking-wider hover:text-primary/80 transition-colors border border-primary/20 px-4 py-2 rounded-lg hover:bg-primary/5"
+          >
+            {item.link_label || "Learn More"}
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        )}
       </div>
+    );
+  };
 
-      <div className="container mx-auto max-w-6xl relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-14 sm:mb-20"
-        >
-          <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-6">
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
-            <span className="text-primary text-xs font-body tracking-widest uppercase">
-              Latest Updates
-            </span>
-          </div>
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-secondary-foreground">
-            News & <span className="text-gold-gradient">Announcements</span>
-          </h2>
-          <p className="text-secondary-foreground/70 font-body text-sm sm:text-base mt-4 max-w-xl mx-auto">
-            Stay informed with our latest events, updates, and exciting announcements.
-          </p>
-        </motion.div>
+  return (
+    <>
+      <section className="py-20 sm:py-28 px-4 sm:px-6 relative">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]" />
+        </div>
 
-        <div
-          className={`grid gap-8 ${
-            announcements.length === 1
-              ? "grid-cols-1 max-w-2xl mx-auto"
-              : announcements.length === 2
-                ? "grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto"
-                : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-          }`}
-        >
-          {announcements.map((item, i) => {
-            const primaryActionUrl = item.button_url || item.link_url;
-            const showSecondaryLink = Boolean(item.link_url && item.link_label && item.link_url !== primaryActionUrl);
+        <div className="container mx-auto max-w-6xl relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="text-center mb-14 sm:mb-20"
+          >
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              <span className="text-primary text-xs font-body tracking-widest uppercase">
+                Latest Updates
+              </span>
+            </div>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-secondary-foreground">
+              News & <span className="text-gold-gradient">Announcements</span>
+            </h2>
+            <p className="text-secondary-foreground/70 font-body text-sm sm:text-base mt-4 max-w-xl mx-auto">
+              Stay informed with our latest events, updates, and exciting announcements.
+            </p>
+          </motion.div>
 
-            return (
+          <div
+            className={`grid gap-8 ${
+              announcements.length === 1
+                ? "grid-cols-1 max-w-2xl mx-auto"
+                : announcements.length === 2
+                  ? "grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto"
+                  : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            }`}
+          >
+            {announcements.map((item, i) => (
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 32 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: i * 0.12 }}
                 whileHover={{ y: -10 }}
-                className="relative group"
+                className="relative group cursor-pointer"
+                onClick={() => setSelected(item)}
               >
                 <div className="absolute -inset-0.5 bg-gradient-to-b from-primary/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
 
@@ -131,58 +184,87 @@ const AnnouncementsSection = () => {
                     )}
 
                     {item.body && (
-                      <p className="text-card-foreground/70 text-sm font-body leading-relaxed line-clamp-4 flex-1">
+                      <p className="text-card-foreground/70 text-sm font-body leading-relaxed line-clamp-3 flex-1">
                         {item.body}
                       </p>
                     )}
 
-                    <div className="flex flex-wrap gap-3 pt-3 mt-auto">
-                      {item.button_text && primaryActionUrl && (
-                        <a
-                          href={primaryActionUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 bg-gold-gradient text-primary-foreground px-5 py-2.5 text-xs font-body font-semibold tracking-wider uppercase rounded-lg hover:opacity-90 hover:shadow-lg hover:shadow-primary/20 transition-all duration-300"
-                        >
-                          {item.button_text}
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-
-                      {showSecondaryLink && (
-                        <a
-                          href={item.link_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-primary text-sm font-body tracking-wider hover:text-primary/80 transition-colors border border-primary/20 px-4 py-2 rounded-lg hover:bg-primary/5"
-                        >
-                          {item.link_label}
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                      )}
-
-                      {!item.button_text && item.link_url && (
-                        <a
-                          href={item.link_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-primary text-sm font-body tracking-wider hover:text-primary/80 transition-colors border border-primary/20 px-4 py-2 rounded-lg hover:bg-primary/5"
-                        >
-                          {item.link_label || "Learn More"}
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                      )}
+                    <div className="flex items-center gap-1.5 text-primary text-xs font-body tracking-wider uppercase pt-2 mt-auto">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Tap to view</span>
                     </div>
                   </div>
                 </article>
               </motion.div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Full article modal */}
+      <Dialog open={!!selected} onOpenChange={(open) => !open && setSelected(null)}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-card border-border/60 backdrop-blur-xl p-0">
+          {selected && (
+            <>
+              {/* Media */}
+              {selected.image_url && !selected.video_url && (
+                <div className="relative w-full h-64 sm:h-80">
+                  <img
+                    src={selected.image_url}
+                    alt={selected.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
+                </div>
+              )}
+              {selected.video_url && (
+                <div className="relative w-full h-64 sm:h-80">
+                  <video
+                    src={selected.video_url}
+                    className="w-full h-full object-cover"
+                    controls
+                    autoPlay
+                    playsInline
+                  />
+                </div>
+              )}
+
+              <div className="p-6 sm:p-8 space-y-5">
+                <DialogHeader className="space-y-3">
+                  <span
+                    className={`inline-block text-[10px] sm:text-xs font-body tracking-widest uppercase px-3 py-1 rounded-full w-fit ${
+                      categoryColors[selected.category] || categoryColors.other
+                    }`}
+                  >
+                    {selected.category}
+                  </span>
+                  <DialogTitle className="font-display text-2xl sm:text-3xl font-bold text-card-foreground leading-tight">
+                    {selected.title}
+                  </DialogTitle>
+                  {selected.header && (
+                    <DialogDescription className="text-card-foreground/80 text-base font-body font-medium !mt-2">
+                      {selected.header}
+                    </DialogDescription>
+                  )}
+                </DialogHeader>
+
+                {selected.body && (
+                  <p className="text-card-foreground/70 text-sm sm:text-base font-body leading-relaxed whitespace-pre-line">
+                    {selected.body}
+                  </p>
+                )}
+
+                {/* Action buttons */}
+                <div className="pt-4 border-t border-border/40">
+                  {renderActions(selected, "lg")}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
 export default AnnouncementsSection;
-
