@@ -24,7 +24,7 @@ const NewsTicker = () => {
 
   if (items.length === 0) return null;
 
-  const activeItem = items[current];
+  const activeItem = items[Math.min(current, items.length - 1)];
 
   return (
     <div className="bg-primary/10 border-b border-primary/20 py-2 px-4 overflow-hidden">
