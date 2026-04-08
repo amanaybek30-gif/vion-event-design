@@ -64,7 +64,7 @@ interface AnnouncementItem {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const getPublicUrl = (path: string, bucket = "images") => `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 
-type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "trailer_video" | "testimonials" | "announcements" | "about" | "services" | "contact" | "vers";
+type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "trailer_video" | "intro_video" | "testimonials" | "announcements" | "about" | "services" | "contact" | "vers";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -93,6 +93,8 @@ const Admin = () => {
   const [brandVideoUploading, setBrandVideoUploading] = useState(false);
   const [trailerVideoUrl, setTrailerVideoUrl] = useState("");
   const [trailerVideoUploading, setTrailerVideoUploading] = useState(false);
+  const [introVideoUrl, setIntroVideoUrl] = useState("");
+  const [introVideoUploading, setIntroVideoUploading] = useState(false);
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [editTestimonial, setEditTestimonial] = useState<Testimonial | null>(null);
@@ -112,6 +114,7 @@ const Admin = () => {
   const videoFileRef = useRef<HTMLInputElement>(null);
   const brandVideoFileRef = useRef<HTMLInputElement>(null);
   const trailerVideoFileRef = useRef<HTMLInputElement>(null);
+  const introVideoFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
