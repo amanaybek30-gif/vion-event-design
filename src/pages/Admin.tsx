@@ -224,6 +224,7 @@ const Admin = () => {
   };
 
 
+  const fetchPortfolio = async () => {
     const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
     if (data) setPortfolio(data.map((d: any) => ({
       ...d,
