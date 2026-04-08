@@ -718,7 +718,37 @@ const Admin = () => {
           </div>
         )}
 
-        {tab === "testimonials" && (
+        {tab === "intro_video" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-2">Site Intro Video</h2>
+            <p className="text-muted-foreground text-sm font-body mb-6">Upload a short cinematic intro animation (3-5 seconds) that plays fullscreen when visitors first open the site. Removing it disables the intro entirely.</p>
+            <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+              {introVideoUrl && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-body">Current intro:</p>
+                  <video src={introVideoUrl} className="w-full max-w-md h-40 object-cover rounded-sm border border-border" controls muted playsInline />
+                </div>
+              )}
+              <input type="file" accept="video/*" ref={introVideoFileRef} onChange={handleIntroVideoUpload} className="hidden" />
+              <div className="flex gap-2">
+                <Button onClick={() => introVideoFileRef.current?.click()} disabled={introVideoUploading} className="bg-gold-gradient text-primary-foreground">
+                  <Upload className="w-4 h-4 mr-2" /> {introVideoUploading ? "Uploading video..." : "Upload Intro Video"}
+                </Button>
+                {introVideoUrl && (
+                  <Button variant="outline" size="sm" onClick={deleteIntroVideo}>
+                    <Trash2 className="w-4 h-4 mr-2" /> Remove Intro
+                  </Button>
+                )}
+              </div>
+              <Input placeholder="Or paste video URL" value={introVideoUrl} onChange={(e) => setIntroVideoUrl(e.target.value)} />
+              {introVideoUrl && (
+                <Button size="sm" variant="outline" onClick={() => saveIntroVideo(introVideoUrl)}>Save URL</Button>
+              )}
+            </div>
+          </div>
+        )}
+
+
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="font-display text-xl font-semibold">Testimonials</h2>
