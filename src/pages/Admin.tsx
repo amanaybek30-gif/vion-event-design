@@ -190,7 +190,40 @@ const Admin = () => {
     if (trailerVideoFileRef.current) trailerVideoFileRef.current.value = "";
   };
 
-  const fetchPortfolio = async () => {
+  const fetchIntroVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("content").eq("page", "home").eq("section_key", "intro_video_url").maybeSingle();
+    if (data) setIntroVideoUrl(data.content);
+  };
+
+  const saveIntroVideo = async (url: string) => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "intro_video_url").maybeSingle();
+    if (data) {
+      await supabase.from("page_contents").update({ content: url, updated_at: new Date().toISOString() }).eq("id", data.id);
+    } else {
+      await supabase.from("page_contents").insert({ page: "home", section_key: "intro_video_url", content: url });
+    }
+    setIntroVideoUrl(url);
+  };
+
+  const handleIntroVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIntroVideoUploading(true);
+    const url = await uploadFile(file, "intro", "videos");
+    if (url) await saveIntroVideo(url);
+    setIntroVideoUploading(false);
+    if (introVideoFileRef.current) introVideoFileRef.current.value = "";
+  };
+
+  const deleteIntroVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "intro_video_url").maybeSingle();
+    if (data) {
+      await supabase.from("page_contents").delete().eq("id", data.id);
+    }
+    setIntroVideoUrl("");
+  };
+
+
     const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
     if (data) setPortfolio(data.map((d: any) => ({
       ...d,
