@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Play, MapPin, Calendar, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import portfolioBg from "@/assets/portfolio-bg.jpg";
 
 interface PortfolioItem {
   id: string;
@@ -49,6 +50,12 @@ const Portfolio = () => {
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <SEOHead title="Portfolio | VION Events" description="Explore our portfolio of premium events, corporate forums, and brand experiences." path="/portfolio" />
+      
+      <div className="fixed inset-0 -z-20">
+        <img src={portfolioBg} alt="" className="w-full h-full object-cover" loading="eager" />
+        <div className="absolute inset-0 bg-background/85" />
+      </div>
+      
       <PageBackground />
       <Navbar />
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6">
@@ -103,7 +110,6 @@ function PortfolioCard({ project, index, onWatchVideos }: { project: PortfolioIt
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-12 items-center"
     >
-      {/* Image */}
       <div className={isEven ? "" : "md:order-2"}>
         <motion.div
           className="overflow-hidden rounded-sm group cursor-pointer"
@@ -118,52 +124,24 @@ function PortfolioCard({ project, index, onWatchVideos }: { project: PortfolioIt
         </motion.div>
       </div>
 
-      {/* Content */}
       <div className={isEven ? "" : "md:order-1"}>
-        <motion.span
-          initial={{ opacity: 0, x: -20 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-primary text-xs tracking-[0.2em] sm:tracking-[0.3em] uppercase font-body"
-        >
+        <motion.span initial={{ opacity: 0, x: -20 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.5, delay: 0.2 }} className="text-primary text-xs tracking-[0.2em] sm:tracking-[0.3em] uppercase font-body">
           {project.category}
         </motion.span>
-
-        <motion.h2
-          initial={{ opacity: 0, x: -20 }}
-          animate={inView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mt-1 sm:mt-2 mb-3 sm:mb-4"
-        >
+        <motion.h2 initial={{ opacity: 0, x: -20 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.5, delay: 0.3 }} className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mt-1 sm:mt-2 mb-3 sm:mb-4">
           {project.title}
         </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-muted-foreground font-body text-sm leading-relaxed mb-3 sm:mb-4"
-        >
+        <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.5, delay: 0.4 }} className="text-muted-foreground font-body text-sm leading-relaxed mb-3 sm:mb-4">
           {project.description}
         </motion.p>
 
         {project.impact && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.45 }}
-            className="text-primary/80 text-xs sm:text-sm font-body tracking-wide mb-4 sm:mb-5 font-medium"
-          >
+          <motion.p initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.5, delay: 0.45 }} className="text-primary/80 text-xs sm:text-sm font-body tracking-wide mb-4 sm:mb-5 font-medium">
             ✦ {project.impact}
           </motion.p>
         )}
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="flex flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-5 text-xs sm:text-sm font-body"
-        >
+        <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.5, delay: 0.5 }} className="flex flex-wrap gap-3 sm:gap-4 mb-4 sm:mb-5 text-xs sm:text-sm font-body">
           {project.event_date && (
             <span className="flex items-center gap-1.5 text-muted-foreground">
               <Calendar className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-primary" />
@@ -179,18 +157,9 @@ function PortfolioCard({ project, index, onWatchVideos }: { project: PortfolioIt
         </motion.div>
 
         {services.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={inView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.5, delay: 0.55 }}
-            className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}} transition={{ duration: 0.5, delay: 0.55 }} className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
             {services.map((service) => (
-              <Badge
-                key={service}
-                variant="outline"
-                className="border-primary/30 text-primary bg-primary/5 cursor-default hover:bg-primary/5 font-body text-[10px] sm:text-xs tracking-wide px-2 sm:px-3 py-0.5 sm:py-1"
-              >
+              <Badge key={service} variant="outline" className="border-primary/30 text-primary bg-primary/5 cursor-default hover:bg-primary/5 font-body text-[10px] sm:text-xs tracking-wide px-2 sm:px-3 py-0.5 sm:py-1">
                 <Briefcase className="w-2.5 sm:w-3 h-2.5 sm:h-3 mr-1" />
                 {service}
               </Badge>
@@ -199,17 +168,8 @@ function PortfolioCard({ project, index, onWatchVideos }: { project: PortfolioIt
         )}
 
         {project.video_urls.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.6 }}
-          >
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-primary/40 text-primary hover:bg-primary/10 hover:scale-[1.02] transition-all duration-300 group text-xs sm:text-sm"
-              onClick={onWatchVideos}
-            >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.6 }}>
+            <Button variant="outline" size="sm" className="border-primary/40 text-primary hover:bg-primary/10 hover:scale-[1.02] transition-all duration-300 group text-xs sm:text-sm" onClick={onWatchVideos}>
               <Play className="w-3.5 sm:w-4 h-3.5 sm:h-4 mr-1.5 sm:mr-2 group-hover:scale-110 transition-transform" />
               Watch Event Videos ({project.video_urls.length})
             </Button>

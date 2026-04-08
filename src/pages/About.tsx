@@ -4,6 +4,7 @@ import PageBackground from "@/components/PageBackground";
 import SEOHead from "@/components/SEOHead";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import aboutBg from "@/assets/about-bg.jpg";
 
 const About = () => {
   const ref = useRef(null);
@@ -37,6 +38,13 @@ const About = () => {
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <SEOHead title="About | VION Events" description="Learn about VION Events — a premium event company focused on delivering well-crafted experiences designed to be remembered." path="/about" />
+      
+      {/* Background image */}
+      <div className="fixed inset-0 -z-20">
+        <img src={aboutBg} alt="" className="w-full h-full object-cover" loading="eager" />
+        <div className="absolute inset-0 bg-background/85" />
+      </div>
+      
       <PageBackground />
       <Navbar />
 

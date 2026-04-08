@@ -6,6 +6,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import galleryBg from "@/assets/gallery-bg.jpg";
 
 export interface GalleryImage {
   id: string;
@@ -27,7 +28,6 @@ const Gallery = () => {
     fetchImages();
   }, []);
 
-  // Preload adjacent lightbox images
   useEffect(() => {
     if (selectedIdx === null || images.length === 0) return;
     [-1, 1].forEach((offset) => {
@@ -46,6 +46,12 @@ const Gallery = () => {
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <SEOHead title="Gallery | VION Events" description="Browse our gallery of beautifully captured event moments." path="/gallery" />
+      
+      <div className="fixed inset-0 -z-20">
+        <img src={galleryBg} alt="" className="w-full h-full object-cover" loading="eager" />
+        <div className="absolute inset-0 bg-background/85" />
+      </div>
+      
       <PageBackground />
       <Navbar />
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6" ref={ref}>

@@ -64,7 +64,7 @@ interface AnnouncementItem {
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const getPublicUrl = (path: string, bucket = "images") => `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`;
 
-type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "trailer_video" | "testimonials" | "announcements" | "about" | "services" | "contact" | "vers";
+type Tab = "portfolio" | "gallery" | "carousel" | "brand_video" | "trailer_video" | "intro_video" | "testimonials" | "announcements" | "about" | "services" | "contact" | "vers";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -93,6 +93,8 @@ const Admin = () => {
   const [brandVideoUploading, setBrandVideoUploading] = useState(false);
   const [trailerVideoUrl, setTrailerVideoUrl] = useState("");
   const [trailerVideoUploading, setTrailerVideoUploading] = useState(false);
+  const [introVideoUrl, setIntroVideoUrl] = useState("");
+  const [introVideoUploading, setIntroVideoUploading] = useState(false);
 
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [editTestimonial, setEditTestimonial] = useState<Testimonial | null>(null);
@@ -112,6 +114,7 @@ const Admin = () => {
   const videoFileRef = useRef<HTMLInputElement>(null);
   const brandVideoFileRef = useRef<HTMLInputElement>(null);
   const trailerVideoFileRef = useRef<HTMLInputElement>(null);
+  const introVideoFileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     supabase.auth.onAuthStateChange((_event, session) => {
@@ -131,6 +134,7 @@ const Admin = () => {
       fetchCarousel();
       fetchBrandVideo();
       fetchTrailerVideo();
+      fetchIntroVideo();
       fetchTestimonials();
       fetchAnnouncements();
     }
@@ -185,6 +189,40 @@ const Admin = () => {
     setTrailerVideoUploading(false);
     if (trailerVideoFileRef.current) trailerVideoFileRef.current.value = "";
   };
+
+  const fetchIntroVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("content").eq("page", "home").eq("section_key", "intro_video_url").maybeSingle();
+    if (data) setIntroVideoUrl(data.content);
+  };
+
+  const saveIntroVideo = async (url: string) => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "intro_video_url").maybeSingle();
+    if (data) {
+      await supabase.from("page_contents").update({ content: url, updated_at: new Date().toISOString() }).eq("id", data.id);
+    } else {
+      await supabase.from("page_contents").insert({ page: "home", section_key: "intro_video_url", content: url });
+    }
+    setIntroVideoUrl(url);
+  };
+
+  const handleIntroVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIntroVideoUploading(true);
+    const url = await uploadFile(file, "intro", "videos");
+    if (url) await saveIntroVideo(url);
+    setIntroVideoUploading(false);
+    if (introVideoFileRef.current) introVideoFileRef.current.value = "";
+  };
+
+  const deleteIntroVideo = async () => {
+    const { data } = await supabase.from("page_contents").select("id").eq("page", "home").eq("section_key", "intro_video_url").maybeSingle();
+    if (data) {
+      await supabase.from("page_contents").delete().eq("id", data.id);
+    }
+    setIntroVideoUrl("");
+  };
+
 
   const fetchPortfolio = async () => {
     const { data } = await supabase.from("portfolio_items").select("*").order("created_at");
@@ -458,6 +496,7 @@ const Admin = () => {
     { key: "carousel", label: "Carousel" },
     { key: "brand_video", label: "Brand Video" },
     { key: "trailer_video", label: "Trailer Video" },
+    { key: "intro_video", label: "Intro Video" },
     { key: "testimonials", label: "Testimonials" },
     { key: "announcements", label: "News & Announcements" },
     { key: "services", label: "Services" },
@@ -674,6 +713,36 @@ const Admin = () => {
                 <Button variant="outline" size="sm" onClick={() => saveTrailerVideo("")}>
                   <Trash2 className="w-4 h-4 mr-2" /> Remove Trailer
                 </Button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {tab === "intro_video" && (
+          <div>
+            <h2 className="font-display text-xl font-semibold mb-2">Site Intro Video</h2>
+            <p className="text-muted-foreground text-sm font-body mb-6">Upload a short cinematic intro animation (3-5 seconds) that plays fullscreen when visitors first open the site. Removing it disables the intro entirely.</p>
+            <div className="border border-border rounded-sm p-6 mb-6 space-y-4 bg-card">
+              {introVideoUrl && (
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground font-body">Current intro:</p>
+                  <video src={introVideoUrl} className="w-full max-w-md h-40 object-cover rounded-sm border border-border" controls muted playsInline />
+                </div>
+              )}
+              <input type="file" accept="video/*" ref={introVideoFileRef} onChange={handleIntroVideoUpload} className="hidden" />
+              <div className="flex gap-2">
+                <Button onClick={() => introVideoFileRef.current?.click()} disabled={introVideoUploading} className="bg-gold-gradient text-primary-foreground">
+                  <Upload className="w-4 h-4 mr-2" /> {introVideoUploading ? "Uploading video..." : "Upload Intro Video"}
+                </Button>
+                {introVideoUrl && (
+                  <Button variant="outline" size="sm" onClick={deleteIntroVideo}>
+                    <Trash2 className="w-4 h-4 mr-2" /> Remove Intro
+                  </Button>
+                )}
+              </div>
+              <Input placeholder="Or paste video URL" value={introVideoUrl} onChange={(e) => setIntroVideoUrl(e.target.value)} />
+              {introVideoUrl && (
+                <Button size="sm" variant="outline" onClick={() => saveIntroVideo(introVideoUrl)}>Save URL</Button>
               )}
             </div>
           </div>
