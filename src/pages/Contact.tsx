@@ -6,6 +6,7 @@ import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
+import contactBg from "@/assets/contact-bg.jpg";
 
 const defaults = {
   subtitle: "Get in Touch",
@@ -43,6 +44,12 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <SEOHead title="Contact | VION Events" description="Get in touch with VION Events. Let's plan your next unforgettable experience." path="/contact" />
+      
+      <div className="fixed inset-0 -z-20">
+        <img src={contactBg} alt="" className="w-full h-full object-cover" loading="eager" />
+        <div className="absolute inset-0 bg-background/85" />
+      </div>
+      
       <PageBackground />
       <Navbar />
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6" ref={ref}>

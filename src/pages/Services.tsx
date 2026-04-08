@@ -9,6 +9,7 @@ import {
   UtensilsCrossed, Clapperboard, Truck, Gift,
 } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
+import servicesBg from "@/assets/services-bg.jpg";
 
 const iconMap = [CalendarCheck, Palette, Building2, PenTool, Monitor, Music, UtensilsCrossed, Clapperboard, Truck, Gift];
 
@@ -53,6 +54,12 @@ const Services = () => {
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <SEOHead title="Services | VION Events" description="End-to-end event solutions crafted with creativity, precision, and passion." path="/services" />
+      
+      <div className="fixed inset-0 -z-20">
+        <img src={servicesBg} alt="" className="w-full h-full object-cover" loading="eager" />
+        <div className="absolute inset-0 bg-background/85" />
+      </div>
+      
       <PageBackground />
       <Navbar />
       <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6" ref={ref}>
@@ -64,7 +71,7 @@ const Services = () => {
           </motion.div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
             {services.map((service, i) => (
-              <motion.div key={service.title} initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: i * 0.1 }} whileHover={{ y: -8, borderColor: "hsl(var(--primary) / 0.5)" }} className="border border-border rounded-sm p-6 sm:p-8 hover:border-primary/40 transition-all duration-500 group cursor-default">
+              <motion.div key={service.title} initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: i * 0.1 }} whileHover={{ y: -8, borderColor: "hsl(var(--primary) / 0.5)" }} className="border border-border rounded-sm p-6 sm:p-8 hover:border-primary/40 transition-all duration-500 group cursor-default backdrop-blur-sm bg-background/40">
                 <motion.div whileHover={{ rotate: 5, scale: 1.1 }} transition={{ duration: 0.3 }}>
                   <service.icon className="w-6 sm:w-8 h-6 sm:h-8 text-primary mb-4 sm:mb-5 group-hover:scale-110 transition-transform duration-300" />
                 </motion.div>
