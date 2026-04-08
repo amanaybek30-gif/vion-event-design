@@ -496,6 +496,7 @@ const Admin = () => {
     { key: "carousel", label: "Carousel" },
     { key: "brand_video", label: "Brand Video" },
     { key: "trailer_video", label: "Trailer Video" },
+    { key: "intro_video", label: "Intro Video" },
     { key: "testimonials", label: "Testimonials" },
     { key: "announcements", label: "News & Announcements" },
     { key: "services", label: "Services" },
