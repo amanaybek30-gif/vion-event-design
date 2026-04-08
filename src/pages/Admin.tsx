@@ -134,6 +134,7 @@ const Admin = () => {
       fetchCarousel();
       fetchBrandVideo();
       fetchTrailerVideo();
+      fetchIntroVideo();
       fetchTestimonials();
       fetchAnnouncements();
     }
