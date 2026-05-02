@@ -1,7 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Briefcase, Palette, Music, ArrowUpRight, Sparkles } from "lucide-react";
+import { Briefcase, Palette, Music, Sparkles } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
+import servicesBg from "@/assets/services-bg.jpg";
 
 const icons = [Briefcase, Palette, Music];
 
