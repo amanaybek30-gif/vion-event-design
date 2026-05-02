@@ -6,9 +6,12 @@ interface IntroVideoProps {
   onComplete: () => void;
 }
 
+const CACHE_KEY = "vion_intro_url";
+
 const IntroVideo = ({ onComplete }: IntroVideoProps) => {
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [videoUrl, setVideoUrl] = useState<string | null>(
+    () => localStorage.getItem(CACHE_KEY)
+  );
   const [show, setShow] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -21,26 +24,25 @@ const IntroVideo = ({ onComplete }: IntroVideoProps) => {
       return;
     }
 
-    const fetchIntro = async () => {
-      const { data } = await supabase
-        .from("page_contents")
-        .select("content")
-        .eq("page", "home")
-        .eq("section_key", "intro_video_url")
-        .maybeSingle();
-
-      if (data?.content) {
-        setVideoUrl(data.content);
-      } else {
-        // No intro video set — skip
-        sessionStorage.setItem("vion_intro_shown", "1");
-        setShow(false);
-        onComplete();
-      }
-      setLoading(false);
-    };
-
-    fetchIntro();
+    // Refresh the cached URL in the background (non-blocking)
+    supabase
+      .from("page_contents")
+      .select("content")
+      .eq("page", "home")
+      .eq("section_key", "intro_video_url")
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data?.content) {
+          localStorage.setItem(CACHE_KEY, data.content);
+          // Only set if we didn't already have a cached URL playing
+          setVideoUrl((prev) => prev ?? data.content);
+        } else if (!localStorage.getItem(CACHE_KEY)) {
+          // No intro video set — skip
+          sessionStorage.setItem("vion_intro_shown", "1");
+          setShow(false);
+          onComplete();
+        }
+      });
   }, [onComplete]);
 
   const handleEnd = useCallback(() => {
