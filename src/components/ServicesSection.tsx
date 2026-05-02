@@ -138,14 +138,9 @@ const ServicesSection = () => {
                     ))}
                   </ul>
 
-                  {/* Footer arrow */}
-                  <div className="mt-7 pt-5 border-t border-border/40 flex items-center justify-between">
-                    <span className="text-[10px] font-body tracking-[0.25em] uppercase text-white/40 group-hover:text-primary/80 transition-colors duration-300">
-                      Explore
-                    </span>
-                    <div className="w-8 h-8 rounded-full border border-border/60 flex items-center justify-center group-hover:border-primary group-hover:bg-primary/10 transition-all duration-500">
-                      <ArrowUpRight className="w-3.5 h-3.5 text-white/60 group-hover:text-primary group-hover:rotate-45 transition-all duration-500" />
-                    </div>
+                  {/* Bottom accent line */}
+                  <div className="mt-7 pt-5 border-t border-border/40">
+                    <div className="h-px w-0 bg-gradient-to-r from-primary via-primary/60 to-transparent group-hover:w-full transition-all duration-700" />
                   </div>
                 </div>
               </div>
