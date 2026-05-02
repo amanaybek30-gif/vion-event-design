@@ -58,40 +58,47 @@ const Navbar = () => {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "md:bg-secondary/80 md:backdrop-blur-xl md:border-b md:border-primary/10 md:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.5)]"
-          : "md:bg-transparent md:border-b md:border-transparent"
+          ? "md:bg-secondary/70 md:backdrop-blur-2xl md:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.6)]"
+          : "md:bg-gradient-to-b md:from-secondary/40 md:to-transparent md:backdrop-blur-sm"
       }`}
     >
+      {/* Gold hairline accent */}
+      <div
+        className={`pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent transition-opacity duration-500 hidden md:block ${
+          scrolled ? "opacity-100" : "opacity-0"
+        }`}
+      />
 
-      <div className="container mx-auto flex items-center justify-between py-2 px-6">
-        <Link to="/" className="group">
+      <div className={`container mx-auto flex items-center justify-between px-6 transition-all duration-500 ${scrolled ? "py-2" : "py-3"}`}>
+        <Link to="/" className="group relative">
           <motion.img
             src={vionLogo}
             alt="VION Events"
-            className="h-12 w-auto"
+            className={`w-auto transition-all duration-500 ${scrolled ? "h-10" : "h-12"}`}
             style={{ mixBlendMode: "screen" }}
             whileHover={{ scale: 1.06, rotate: -1 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           />
+          <span className="absolute -inset-2 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
         </Link>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-full border border-primary/10 bg-secondary/30 backdrop-blur-md">
           {navLinks.map((link) =>
             link.dropdown ? (
               <div key={link.label} className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setSolutionsOpen(!solutionsOpen)}
-                  className={`text-xs font-body tracking-widest uppercase transition-colors duration-300 inline-flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 rounded-full text-[11px] font-body tracking-[0.2em] uppercase transition-all duration-300 inline-flex items-center gap-1.5 ${
                     isSolutionActive
-                      ? "text-primary"
-                      : "text-secondary-foreground/70 hover:text-primary"
+                      ? "text-primary bg-primary/10"
+                      : "text-secondary-foreground/70 hover:text-primary hover:bg-primary/5"
                   }`}
                 >
                   {link.label}
                   <ChevronDown
-                    size={12}
-                    className={`transition-transform duration-300 ${solutionsOpen ? "rotate-180" : ""}`}
+                    size={11}
+                    className={`transition-transform duration-300 ${solutionsOpen ? "rotate-180 text-primary" : ""}`}
                   />
                 </button>
                 <AnimatePresence>
@@ -138,18 +145,18 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`relative text-xs font-body tracking-widest uppercase transition-colors duration-300 group ${
+                className={`relative px-3.5 py-1.5 rounded-full text-[11px] font-body tracking-[0.2em] uppercase transition-all duration-300 group ${
                   location.pathname === link.href
-                    ? "text-primary"
-                    : "text-secondary-foreground/70 hover:text-primary"
+                    ? "text-primary bg-primary/10"
+                    : "text-secondary-foreground/70 hover:text-primary hover:bg-primary/5"
                 }`}
               >
-                {link.label}
+                <span className="relative z-10">{link.label}</span>
                 <span
-                  className={`absolute -bottom-1 left-0 h-px bg-gradient-to-r from-primary/0 via-primary to-primary/0 transition-all duration-300 ${
+                  className={`pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-1 h-px bg-gradient-to-r from-primary/0 via-primary to-primary/0 transition-all duration-300 ${
                     location.pathname === link.href
-                      ? "w-full opacity-100"
-                      : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
+                      ? "w-6 opacity-100"
+                      : "w-0 opacity-0 group-hover:w-6 group-hover:opacity-100"
                   }`}
                 />
               </Link>

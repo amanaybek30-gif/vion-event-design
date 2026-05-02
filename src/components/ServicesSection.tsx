@@ -1,7 +1,8 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Briefcase, Palette, Music, ArrowUpRight, Sparkles } from "lucide-react";
+import { Briefcase, Palette, Music, Sparkles } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
+import servicesBg from "@/assets/services-bg.jpg";
 
 const icons = [Briefcase, Palette, Music];
 
@@ -49,10 +50,18 @@ const ServicesSection = () => {
       className="relative py-20 sm:py-32 px-4 sm:px-6 overflow-hidden"
       ref={ref}
     >
-      {/* Decorative background orbs */}
+      {/* Blurred background image */}
       <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute top-1/4 -left-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.06] blur-[120px]" />
-        <div className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.05] blur-[120px]" />
+        <img
+          src={servicesBg}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="w-full h-full object-cover blur-2xl scale-110 opacity-30"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
+        <div className="absolute top-1/4 -left-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.08] blur-[120px]" />
+        <div className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.06] blur-[120px]" />
       </div>
 
       <div className="container mx-auto max-w-6xl relative">
@@ -129,14 +138,9 @@ const ServicesSection = () => {
                     ))}
                   </ul>
 
-                  {/* Footer arrow */}
-                  <div className="mt-7 pt-5 border-t border-border/40 flex items-center justify-between">
-                    <span className="text-[10px] font-body tracking-[0.25em] uppercase text-white/40 group-hover:text-primary/80 transition-colors duration-300">
-                      Explore
-                    </span>
-                    <div className="w-8 h-8 rounded-full border border-border/60 flex items-center justify-center group-hover:border-primary group-hover:bg-primary/10 transition-all duration-500">
-                      <ArrowUpRight className="w-3.5 h-3.5 text-white/60 group-hover:text-primary group-hover:rotate-45 transition-all duration-500" />
-                    </div>
+                  {/* Bottom accent line */}
+                  <div className="mt-7 pt-5 border-t border-border/40">
+                    <div className="h-px w-0 bg-gradient-to-r from-primary via-primary/60 to-transparent group-hover:w-full transition-all duration-700" />
                   </div>
                 </div>
               </div>
