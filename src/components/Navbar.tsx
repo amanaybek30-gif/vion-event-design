@@ -58,8 +58,8 @@ const Navbar = () => {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "md:bg-secondary/80 md:backdrop-blur-xl md:border-b md:border-primary/10 md:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.5)]"
-          : "md:bg-transparent md:border-b md:border-transparent"
+          ? "md:bg-secondary/70 md:backdrop-blur-2xl md:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.6)]"
+          : "md:bg-gradient-to-b md:from-secondary/40 md:to-transparent md:backdrop-blur-sm"
       }`}
     >
 
