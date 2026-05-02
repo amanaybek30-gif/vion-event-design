@@ -43,11 +43,16 @@ const Navbar = () => {
       initial={{ y: -40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-secondary/95 backdrop-blur-md border-b border-border/20"
+      className="fixed top-0 left-0 right-0 z-50 md:bg-secondary/95 md:backdrop-blur-md md:border-b md:border-border/20"
     >
       <div className="container mx-auto flex items-center justify-between py-2 px-6">
         <Link to="/">
-          <img src={vionLogo} alt="VION Events" className="h-12 w-auto" />
+          <img
+            src={vionLogo}
+            alt="VION Events"
+            className="h-12 w-auto"
+            style={{ mixBlendMode: "screen" }}
+          />
         </Link>
 
         {/* Desktop */}
