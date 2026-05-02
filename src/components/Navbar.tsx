@@ -89,16 +89,16 @@ const Navbar = () => {
               <div key={link.label} className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setSolutionsOpen(!solutionsOpen)}
-                  className={`text-xs font-body tracking-widest uppercase transition-colors duration-300 inline-flex items-center gap-1.5 ${
+                  className={`px-3.5 py-1.5 rounded-full text-[11px] font-body tracking-[0.2em] uppercase transition-all duration-300 inline-flex items-center gap-1.5 ${
                     isSolutionActive
-                      ? "text-primary"
-                      : "text-secondary-foreground/70 hover:text-primary"
+                      ? "text-primary bg-primary/10"
+                      : "text-secondary-foreground/70 hover:text-primary hover:bg-primary/5"
                   }`}
                 >
                   {link.label}
                   <ChevronDown
-                    size={12}
-                    className={`transition-transform duration-300 ${solutionsOpen ? "rotate-180" : ""}`}
+                    size={11}
+                    className={`transition-transform duration-300 ${solutionsOpen ? "rotate-180 text-primary" : ""}`}
                   />
                 </button>
                 <AnimatePresence>
