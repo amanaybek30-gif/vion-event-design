@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Briefcase, Palette, Music } from "lucide-react";
+import { Briefcase, Palette, Music, ArrowUpRight, Sparkles } from "lucide-react";
 import { usePageContent } from "@/hooks/usePageContent";
 
 const icons = [Briefcase, Palette, Music];
@@ -23,50 +23,123 @@ const ServicesSection = () => {
   const { content: c } = usePageContent("services_section", defaults);
 
   const categories = [
-    { icon: icons[0], title: c.cat1_title, items: c.cat1_items.split(",").map((s) => s.trim()) },
-    { icon: icons[1], title: c.cat2_title, items: c.cat2_items.split(",").map((s) => s.trim()) },
-    { icon: icons[2], title: c.cat3_title, items: c.cat3_items.split(",").map((s) => s.trim()) },
+    {
+      icon: icons[0],
+      title: c.cat1_title,
+      items: c.cat1_items.split(",").map((s) => s.trim()),
+      number: "01",
+    },
+    {
+      icon: icons[1],
+      title: c.cat2_title,
+      items: c.cat2_items.split(",").map((s) => s.trim()),
+      number: "02",
+    },
+    {
+      icon: icons[2],
+      title: c.cat3_title,
+      items: c.cat3_items.split(",").map((s) => s.trim()),
+      number: "03",
+    },
   ];
 
   return (
-    <section id="services" className="py-16 sm:py-32 px-4 sm:px-6" ref={ref}>
-      <div className="container mx-auto max-w-6xl">
+    <section
+      id="services"
+      className="relative py-20 sm:py-32 px-4 sm:px-6 overflow-hidden"
+      ref={ref}
+    >
+      {/* Decorative background orbs */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute top-1/4 -left-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.06] blur-[120px]" />
+        <div className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.05] blur-[120px]" />
+      </div>
+
+      <div className="container mx-auto max-w-6xl relative">
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12 sm:mb-20"
+          className="text-center mb-16 sm:mb-24"
         >
-          <p className="text-primary tracking-[0.2em] sm:tracking-[0.3em] uppercase text-xs sm:text-sm font-body mb-3 sm:mb-4">
-            {c.subtitle}
-          </p>
-          <h2 className="font-display text-2xl sm:text-4xl md:text-5xl font-bold">
-            {c.title_start} <span className="text-gold-gradient">{c.title_highlight}</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 backdrop-blur-sm mb-6">
+            <Sparkles className="w-3 h-3 text-primary" />
+            <p className="text-primary tracking-[0.25em] uppercase text-[10px] sm:text-xs font-body">
+              {c.subtitle}
+            </p>
+          </div>
+          <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.1]">
+            {c.title_start}{" "}
+            <span className="text-gold-gradient italic">{c.title_highlight}</span>
           </h2>
+          <div className="w-16 h-px bg-gradient-to-r from-transparent via-primary to-transparent mx-auto mt-8" />
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8">
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.title}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 60 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.2 }}
-              whileHover={{ y: -8, borderColor: "hsl(var(--primary) / 0.5)" }}
-              className="border border-border rounded-sm p-6 sm:p-8 hover:border-primary/40 transition-all duration-500 group cursor-default"
+              transition={{ duration: 0.7, delay: i * 0.15, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -10 }}
+              className="group relative"
             >
-              <cat.icon className="w-6 sm:w-8 h-6 sm:h-8 text-primary mb-4 sm:mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300" />
-              <h3 className="font-display text-lg sm:text-xl font-semibold mb-3 sm:mb-4">
-                {cat.title}
-              </h3>
-              <ul className="space-y-2">
-                {cat.items.map((item) => (
-                  <li key={item} className="text-white/60 font-body text-xs sm:text-sm flex items-center gap-2">
-                    <motion.span className="w-1.5 h-1.5 rounded-full bg-primary/60 flex-shrink-0" whileHover={{ scale: 2 }} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              {/* Glow on hover */}
+              <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-primary/40 via-primary/0 to-primary/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500 -z-10" />
+
+              <div className="relative h-full rounded-2xl border border-border/60 bg-secondary/40 backdrop-blur-md p-7 sm:p-8 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:bg-secondary/60">
+                {/* Animated gradient sheen */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.08] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+
+                {/* Big faint number */}
+                <span className="absolute top-4 right-5 font-display text-5xl sm:text-6xl font-bold text-primary/[0.08] group-hover:text-primary/20 transition-colors duration-500 select-none">
+                  {cat.number}
+                </span>
+
+                <div className="relative">
+                  {/* Icon */}
+                  <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-xl bg-primary/10 border border-primary/20 mb-6 group-hover:bg-primary/15 group-hover:border-primary/40 transition-all duration-500">
+                    <cat.icon className="w-6 h-6 text-primary group-hover:scale-110 transition-transform duration-500" />
+                    <div className="absolute inset-0 rounded-xl bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-display text-xl sm:text-2xl font-semibold mb-5 leading-tight">
+                    {cat.title}
+                  </h3>
+
+                  {/* Divider */}
+                  <div className="w-10 h-px bg-primary/40 mb-5 group-hover:w-20 transition-all duration-500" />
+
+                  {/* Items */}
+                  <ul className="space-y-3">
+                    {cat.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-3 text-white/70 font-body text-sm"
+                      >
+                        <span className="mt-1.5 w-1 h-1 rounded-full bg-primary/60 flex-shrink-0 group-hover:bg-primary group-hover:scale-150 transition-all duration-300" />
+                        <span className="group-hover:text-white/90 transition-colors duration-300">
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Footer arrow */}
+                  <div className="mt-7 pt-5 border-t border-border/40 flex items-center justify-between">
+                    <span className="text-[10px] font-body tracking-[0.25em] uppercase text-white/40 group-hover:text-primary/80 transition-colors duration-300">
+                      Explore
+                    </span>
+                    <div className="w-8 h-8 rounded-full border border-border/60 flex items-center justify-center group-hover:border-primary group-hover:bg-primary/10 transition-all duration-500">
+                      <ArrowUpRight className="w-3.5 h-3.5 text-white/60 group-hover:text-primary group-hover:rotate-45 transition-all duration-500" />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           ))}
         </div>

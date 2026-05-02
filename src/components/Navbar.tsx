@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -23,8 +23,21 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
   const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    setScrolled(latest > 20);
+    if (latest > previous && latest > 120 && !open) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -41,17 +54,24 @@ const Navbar = () => {
   return (
     <motion.nav
       initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7 }}
-      className="fixed top-0 left-0 right-0 z-50 md:bg-secondary/95 md:backdrop-blur-md md:border-b md:border-border/20"
+      animate={{ y: hidden ? -120 : 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "md:bg-secondary/80 md:backdrop-blur-xl md:border-b md:border-primary/10 md:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.5)]"
+          : "md:bg-transparent md:border-b md:border-transparent"
+      }`}
     >
+
       <div className="container mx-auto flex items-center justify-between py-2 px-6">
-        <Link to="/">
-          <img
+        <Link to="/" className="group">
+          <motion.img
             src={vionLogo}
             alt="VION Events"
             className="h-12 w-auto"
             style={{ mixBlendMode: "screen" }}
+            whileHover={{ scale: 1.06, rotate: -1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           />
         </Link>
 
@@ -118,13 +138,20 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`text-xs font-body tracking-widest uppercase transition-colors duration-300 ${
+                className={`relative text-xs font-body tracking-widest uppercase transition-colors duration-300 group ${
                   location.pathname === link.href
                     ? "text-primary"
                     : "text-secondary-foreground/70 hover:text-primary"
                 }`}
               >
                 {link.label}
+                <span
+                  className={`absolute -bottom-1 left-0 h-px bg-gradient-to-r from-primary/0 via-primary to-primary/0 transition-all duration-300 ${
+                    location.pathname === link.href
+                      ? "w-full opacity-100"
+                      : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
+                  }`}
+                />
               </Link>
             )
           )}
