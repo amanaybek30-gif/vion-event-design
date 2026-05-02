@@ -62,21 +62,28 @@ const Navbar = () => {
           : "md:bg-gradient-to-b md:from-secondary/40 md:to-transparent md:backdrop-blur-sm"
       }`}
     >
+      {/* Gold hairline accent */}
+      <div
+        className={`pointer-events-none absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent transition-opacity duration-500 hidden md:block ${
+          scrolled ? "opacity-100" : "opacity-0"
+        }`}
+      />
 
-      <div className="container mx-auto flex items-center justify-between py-2 px-6">
-        <Link to="/" className="group">
+      <div className={`container mx-auto flex items-center justify-between px-6 transition-all duration-500 ${scrolled ? "py-2" : "py-3"}`}>
+        <Link to="/" className="group relative">
           <motion.img
             src={vionLogo}
             alt="VION Events"
-            className="h-12 w-auto"
+            className={`w-auto transition-all duration-500 ${scrolled ? "h-10" : "h-12"}`}
             style={{ mixBlendMode: "screen" }}
             whileHover={{ scale: 1.06, rotate: -1 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
           />
+          <span className="absolute -inset-2 rounded-full bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
         </Link>
 
         {/* Desktop */}
-        <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-full border border-primary/10 bg-secondary/30 backdrop-blur-md">
           {navLinks.map((link) =>
             link.dropdown ? (
               <div key={link.label} className="relative" ref={dropdownRef}>
