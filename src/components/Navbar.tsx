@@ -138,13 +138,20 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`text-xs font-body tracking-widest uppercase transition-colors duration-300 ${
+                className={`relative text-xs font-body tracking-widest uppercase transition-colors duration-300 group ${
                   location.pathname === link.href
                     ? "text-primary"
                     : "text-secondary-foreground/70 hover:text-primary"
                 }`}
               >
                 {link.label}
+                <span
+                  className={`absolute -bottom-1 left-0 h-px bg-gradient-to-r from-primary/0 via-primary to-primary/0 transition-all duration-300 ${
+                    location.pathname === link.href
+                      ? "w-full opacity-100"
+                      : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
+                  }`}
+                />
               </Link>
             )
           )}
