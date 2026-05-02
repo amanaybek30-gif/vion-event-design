@@ -64,12 +64,14 @@ const Navbar = () => {
     >
 
       <div className="container mx-auto flex items-center justify-between py-2 px-6">
-        <Link to="/">
-          <img
+        <Link to="/" className="group">
+          <motion.img
             src={vionLogo}
             alt="VION Events"
             className="h-12 w-auto"
             style={{ mixBlendMode: "screen" }}
+            whileHover={{ scale: 1.06, rotate: -1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           />
         </Link>
 
