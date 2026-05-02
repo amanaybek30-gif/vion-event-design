@@ -56,7 +56,7 @@ const IntroVideo = ({ onComplete }: IntroVideoProps) => {
     handleEnd();
   }, [handleEnd]);
 
-  if (!show || loading) return null;
+  if (!show) return null;
   if (!videoUrl) return null;
 
   return (
