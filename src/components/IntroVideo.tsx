@@ -74,8 +74,10 @@ const IntroVideo = ({ onComplete }: IntroVideoProps) => {
             autoPlay
             muted
             playsInline
+            preload="auto"
             onEnded={handleEnd}
             onError={handleEnd}
+            onCanPlay={() => videoRef.current?.play().catch(() => {})}
             className="w-full h-full object-cover"
           />
 
