@@ -23,8 +23,21 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [solutionsOpen, setSolutionsOpen] = useState(false);
   const [mobileSolutionsOpen, setMobileSolutionsOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    setScrolled(latest > 20);
+    if (latest > previous && latest > 120 && !open) {
+      setHidden(true);
+    } else {
+      setHidden(false);
+    }
+  });
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -41,10 +54,15 @@ const Navbar = () => {
   return (
     <motion.nav
       initial={{ y: -40, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.7 }}
-      className="fixed top-0 left-0 right-0 z-50 md:bg-secondary/95 md:backdrop-blur-md md:border-b md:border-border/20"
+      animate={{ y: hidden ? -120 : 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "md:bg-secondary/80 md:backdrop-blur-xl md:border-b md:border-primary/10 md:shadow-[0_8px_30px_-12px_rgba(0,0,0,0.5)]"
+          : "md:bg-transparent md:border-b md:border-transparent"
+      }`}
     >
+
       <div className="container mx-auto flex items-center justify-between py-2 px-6">
         <Link to="/">
           <img
