@@ -6,7 +6,6 @@ import {
   useScroll,
   useTransform,
   useSpring,
-  type MotionValue,
 } from "framer-motion";
 import { useRef } from "react";
 import aboutBg from "@/assets/about-bg.jpg";
