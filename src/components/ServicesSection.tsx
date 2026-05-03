@@ -94,7 +94,7 @@ const ServicesSection = () => {
               {c.subtitle}
             </p>
           </div>
-          <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.1]">
+          <h2 className="font-display text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.1] text-white">
             {c.title_start}{" "}
             <span className="text-gold-gradient italic">{c.title_highlight}</span>
           </h2>
