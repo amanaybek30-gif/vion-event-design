@@ -64,7 +64,7 @@ const About = () => {
 
       <Navbar />
 
-      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 relative">
+      <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 relative z-10">
         <div className="container mx-auto max-w-4xl">
           {/* Hero */}
           <motion.div
