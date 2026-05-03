@@ -64,7 +64,7 @@ const ServicesSection = () => {
         <div className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.08] blur-[120px]" />
       </div>
 
-      <div className="container mx-auto max-w-6xl relative">
+      <div className="container mx-auto max-w-6xl relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
