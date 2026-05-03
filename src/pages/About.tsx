@@ -54,7 +54,7 @@ const About = () => {
       <motion.div
         style={{ y: bgY, scale: bgScale }}
         aria-hidden
-        className="fixed inset-0 -z-10 will-change-transform pointer-events-none"
+        className="fixed inset-0 z-0 will-change-transform pointer-events-none"
       >
         <img src={aboutBg} alt="" className="w-full h-full object-cover" loading="eager" />
         <div className="absolute inset-0 bg-gradient-to-b from-background/75 via-background/65 to-background/90" />
