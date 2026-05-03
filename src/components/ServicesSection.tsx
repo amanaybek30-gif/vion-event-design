@@ -155,7 +155,7 @@ const ServicesSection = () => {
                   </ul>
 
                   {/* Bottom accent line */}
-                  <div className="mt-7 pt-5 border-t border-border/40">
+                  <div className="mt-7 pt-5 border-t border-white/10">
                     <div className="h-px w-0 bg-gradient-to-r from-primary via-primary/60 to-transparent group-hover:w-full transition-all duration-700" />
                   </div>
                 </div>
