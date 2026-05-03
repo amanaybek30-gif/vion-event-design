@@ -47,7 +47,7 @@ const About = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground relative overflow-hidden" ref={scrollRef}>
+    <div className="min-h-screen text-foreground relative overflow-hidden" ref={scrollRef}>
       <SEOHead title="About | VION Events" description="Learn about VION Events — a premium event company focused on delivering well-crafted experiences designed to be remembered." path="/about" />
 
       {/* Parallax background image */}
