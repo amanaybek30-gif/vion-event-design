@@ -47,21 +47,37 @@ const ServicesSection = () => {
   return (
     <section
       id="services"
-      className="relative py-20 sm:py-32 px-4 sm:px-6 overflow-hidden"
+      className="relative py-20 sm:py-32 px-4 sm:px-6 overflow-hidden bg-[#08080a]"
       ref={ref}
     >
-      {/* Background image */}
+      {/* Background image with cinematic grading */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <img
           src={servicesBg}
           alt=""
           aria-hidden="true"
           loading="lazy"
-          className="w-full h-full object-cover scale-105 opacity-70"
+          className="w-full h-full object-cover scale-105 opacity-55"
+          style={{ filter: "saturate(1.1) contrast(1.05)" }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/65 to-background/90" />
-        <div className="absolute top-1/4 -left-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.10] blur-[120px]" />
-        <div className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.08] blur-[120px]" />
+        {/* Deep dark gradient for legibility */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/70 to-black/95" />
+        {/* Warm gold tint */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-primary/[0.06] via-transparent to-primary/[0.04] mix-blend-overlay" />
+        {/* Vignette */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, transparent 0%, transparent 45%, rgba(0,0,0,0.55) 100%)",
+          }}
+        />
+        {/* Floating gold orbs */}
+        <div className="absolute top-1/4 -left-32 w-[32rem] h-[32rem] rounded-full bg-primary/[0.10] blur-[140px]" />
+        <div className="absolute bottom-1/4 -right-32 w-[32rem] h-[32rem] rounded-full bg-primary/[0.08] blur-[140px]" />
+        {/* Top & bottom hairlines for section framing */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       </div>
 
       <div className="container mx-auto max-w-6xl relative z-10">
