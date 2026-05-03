@@ -132,7 +132,7 @@ const ServicesSection = () => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="font-display text-xl sm:text-2xl font-semibold mb-5 leading-tight">
+                  <h3 className="font-display text-xl sm:text-2xl font-semibold mb-5 leading-tight text-white">
                     {cat.title}
                   </h3>
 
