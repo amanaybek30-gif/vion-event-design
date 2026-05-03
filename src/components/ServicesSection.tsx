@@ -50,18 +50,19 @@ const ServicesSection = () => {
       className="relative py-20 sm:py-32 px-4 sm:px-6 overflow-hidden"
       ref={ref}
     >
-      {/* Blurred background image */}
+      {/* Background image */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <img
           src={servicesBg}
           alt=""
           aria-hidden="true"
           loading="lazy"
-          className="w-full h-full object-cover blur-2xl scale-110 opacity-30"
+          className="w-full h-full object-cover scale-105 opacity-70"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/85 to-background" />
-        <div className="absolute top-1/4 -left-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.08] blur-[120px]" />
-        <div className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.06] blur-[120px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background/90" />
+        <div className="absolute inset-0 backdrop-blur-[2px]" />
+        <div className="absolute top-1/4 -left-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.10] blur-[120px]" />
+        <div className="absolute bottom-1/4 -right-32 w-[28rem] h-[28rem] rounded-full bg-primary/[0.08] blur-[120px]" />
       </div>
 
       <div className="container mx-auto max-w-6xl relative">
