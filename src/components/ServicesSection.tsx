@@ -115,7 +115,7 @@ const ServicesSection = () => {
               {/* Glow on hover */}
               <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-primary/40 via-primary/0 to-primary/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500 -z-10" />
 
-              <div className="relative h-full rounded-2xl border border-border/60 bg-secondary/40 backdrop-blur-md p-7 sm:p-8 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:bg-secondary/60">
+              <div className="relative h-full rounded-2xl border border-white/[0.08] bg-black/50 backdrop-blur-2xl p-7 sm:p-8 overflow-hidden transition-all duration-500 group-hover:border-primary/40 group-hover:bg-black/60 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)]">
                 {/* Animated gradient sheen */}
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.08] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
 
